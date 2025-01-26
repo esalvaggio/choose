@@ -1,11 +1,20 @@
 import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Lobby from './lobby'
+import Session from './Session'
+import { UserProvider } from './contexts/UserContext'
 
 function App() {
 
   return (
-      <div>
-        Choose
-      </div>
+    <UserProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Lobby />} />
+          <Route path='/:sessionId' element={<Session />} />
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   )
 }
 
