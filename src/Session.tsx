@@ -8,7 +8,7 @@ import { ISession } from "./ISession";
 import ColorPicker from "./ColorPicker"
 import NominationPhase from "./NominationPhase"
 import { useUser } from "./contexts/UserContext";
-import Results from "./Results" 
+import Results from "./Results"
 
 export default function Session() {
   const { sessionId } = useParams()
@@ -104,7 +104,7 @@ export default function Session() {
   //       break
   //   }
   // }
-  
+
 
   const nominateFilm = async (title: string) => {
     if (!userData.color || !session) return
@@ -156,7 +156,7 @@ export default function Session() {
   return (
     <div>
       {!userData.color || userData.sessionId !== sessionId ? (
-        <ColorPicker/>
+        <ColorPicker />
       ) : (
         <div>
           {session.stage === 'nominating' && (
