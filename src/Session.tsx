@@ -2,13 +2,13 @@ import { useParams } from "react-router-dom";
 import supabase from "./supabaseClient";
 import { useEffect, useState } from "react";
 import { ISession } from "./ISession";
-import EliminationVoting from "./EliminationVoting"
-import RankedChoiceVoting from "./RankedChoiceVoting"
-import SimpleVoting from "./SimpleVoting"
+// import EliminationVoting from "./EliminationVoting"
+// import RankedChoiceVoting from "./RankedChoiceVoting"
+// import SimpleVoting from "./SimpleVoting"
 import ColorPicker from "./ColorPicker"
 import NominationPhase from "./NominationPhase"
 import { useUser } from "./contexts/UserContext";
-import Results from "./Results"
+import Results from "./Results" 
 
 export default function Session() {
   const { sessionId } = useParams()
