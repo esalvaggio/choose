@@ -5,11 +5,13 @@ import { useUser } from "./contexts/UserContext"
 import { ISession } from "./ISession"
 
 function ColorPicker({ session }: { session: ISession }) {
-  const [takenColors, setTakenColors] = useState<string[]>([])
   const COLORS = ["white", "yellow", "teal", "green", "magenta", "red", "blue", "black", "grey"]
+  const [takenColors, setTakenColors] = useState<string[]>([])
   const { sessionId } = useParams()
   const { userData, setUserData } = useUser()
   const [allHere, setAllHere] = useState<boolean>(false)
+  const [showSettings, setShowSettings] = useState<boolean>(false)
+  const [selectedStrategy, setSelectedStrategy] = useState<'elimination' | 'ranked_choice' | 'simple_vote'>(session.voting_strategy)
 
   useEffect(() => {
     if (session) {
@@ -50,6 +52,25 @@ function ColorPicker({ session }: { session: ISession }) {
     setAllHere(true)
   }
 
+  const handleSaveSettings = async () => {
+    const { error: updateError } = await supabase
+      .from('sessions')
+      .update({
+        voting_strategy: selectedStrategy
+      })
+      .eq('id', sessionId)
+
+    if (updateError) {
+      console.error("Error updating voting strategy", updateError)
+      return
+    }
+    setShowSettings(false)
+  }
+  const handleCloseSettings = () => {
+    setSelectedStrategy(session.voting_strategy)
+    setShowSettings(false)
+  }
+
   return (
     <>
       {!userData.color ? (
@@ -63,8 +84,27 @@ function ColorPicker({ session }: { session: ISession }) {
           <div>
             <div>Waiting Room</div>
             <div>{`${takenColors.length} users have joined`}</div>
-            <button>settings</button>
-            <button onClick={() => handleAllHere()}>we're all here</button>
+            {!showSettings && (
+              <>
+                <button onClick={() => setShowSettings(true)}>settings</button>
+                <button onClick={() => handleAllHere()}>we're all here</button>
+              </>
+            )}
+            {showSettings && (
+              <>
+                <div>voting strategy:</div>
+                <select
+                  value={selectedStrategy}
+                  onChange={(e) => setSelectedStrategy(e.target.value as 'elimination' | 'ranked_choice' | 'simple_vote')}
+                >
+                  <option value="elimination">elimination</option>
+                  <option value="ranked_choice">ranked choice</option>
+                  <option value="simple_vote">simple vote</option>
+                </select>
+                <button onClick={() => handleSaveSettings()}>save settings</button>
+                <button onClick={() => handleCloseSettings()}>go back</button>
+              </>
+            )}
           </div>
         )
       )}
