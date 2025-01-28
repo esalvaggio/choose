@@ -38,7 +38,7 @@ export default function Session() {
           id: sessionId,
           films: [],
           voting_strategy: 'elimination',
-          stage: 'nominating',
+          stage: 'color',
           users: [],
           current_round: 0
         }
@@ -70,6 +70,12 @@ export default function Session() {
         filter: `id=eq.${sessionId}`
       },
         payload => {
+          console.log("Received real-time update:", {
+            event: payload.eventType,
+            old: payload.old,
+            new: payload.new,
+            timestamp: new Date().toISOString()
+          })
           setSession(payload.new as ISession)
         })
       .subscribe()
@@ -155,18 +161,18 @@ export default function Session() {
 
   return (
     <div>
-      {!userData.color || userData.sessionId !== sessionId ? (
-        <ColorPicker />
+      {session.stage == "color" ? (
+        <ColorPicker session={session} />
       ) : (
         <div>
-          {session.stage === 'nominating' && (
+          {session.stage === 'nom' && (
             <NominationPhase
               onNominate={nominateFilm}
               films={session.films}
             />
           )}
           {/* {session.stage === 'voting' && renderVotingPhase()} */}
-          {session.stage === 'complete' && (
+          {session.stage === 'result' && (
             <Results
               session={session}
             />

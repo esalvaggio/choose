@@ -3,7 +3,7 @@ export interface ISession {
     created_at?: string;
     voting_strategy: 'elimination' | 'ranked_choice' | 'simple_vote';
     films: IFilm[];
-    stage: "nominating" | "voting" | "complete";
+    stage: "color" | "nom" | "vote" | "result";
     users: {
         votes: {
             eliminated_choice?: string;

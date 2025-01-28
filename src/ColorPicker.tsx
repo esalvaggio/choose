@@ -2,51 +2,28 @@ import { useParams } from "react-router-dom"
 import supabase from "./supabaseClient"
 import { useEffect, useState } from "react"
 import { useUser } from "./contexts/UserContext"
+import { ISession } from "./ISession"
 
-function ColorPicker() {
+function ColorPicker({ session }: { session: ISession }) {
   const [takenColors, setTakenColors] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
   const COLORS = ["white", "yellow", "teal", "green", "magenta", "red", "blue", "black", "grey"]
   const { sessionId } = useParams()
   const { setUserData } = useUser()
+  const [choseColor, setChoseColor] = useState<boolean>(false)
+  const [allHere, setAllHere] = useState<boolean>(false)
 
   useEffect(() => {
-    const fetchColors = async () => {
-      try {
-        const { data: session, error } = await supabase
-          .from('sessions')
-          .select('*')
-          .eq('id', sessionId)
-          .single()
-        if (error) {
-          console.error("error response from supabase", error)
-          return
-        }
-        if (session) {
-          setTakenColors(session.users.map((u: { color: any }) => u.color))
-        }
-      } finally {
-        setLoading(false)
-      }
+    if (session) {
+      setTakenColors(session.users.map((u: { color: any }) => u.color))
     }
-    fetchColors()
-  }, [sessionId])
+  }, [session])
 
   const chooseColor = async (color: string) => {
-    const { data: session, error } = await supabase
-      .from('sessions')
-      .select('*')
-      .eq('id', sessionId)
-      .single()
-    if (error) {
-      console.error("error response from supabase", error)
-      return
-    }
     if (session.users.some((u: { color: string }) => u.color === color)) {
-      setTakenColors(session.users.map((u: { color: any }) => u.color))
       alert('Color already taken!') // consider better ui for this
       return
     }
+
     const { error: updateError } = await supabase
       .from('sessions')
       .update({
@@ -54,24 +31,45 @@ function ColorPicker() {
       })
       .eq('id', sessionId)
     if (updateError) {
-      console.error("some update error from supabase", updateError)
+      console.error("Error updating user color", updateError)
       return
     }
     setUserData(color, sessionId!)
+    setChoseColor(true)
   }
 
-  if (loading) {
-    return <div></div>
+  const handleAllHere = async () => {
+    const { error: updateError } = await supabase
+      .from('sessions')
+      .update({
+        stage: "nom"
+      })
+      .eq('id', sessionId)
+    if (updateError) {
+      console.error("Error updating session stage", updateError)
+      return
+    }
+    setAllHere(true)
   }
 
   return (
     <>
-      {COLORS.filter((color) => !takenColors.includes(color)).map((color) => {
-        return <button key={color} onClick={() => chooseColor(color)}>
-          {color}
-        </button>
-      })}
-      <div>{takenColors}</div>
+      {(!choseColor && !allHere) ? (
+        COLORS.filter((color) => !takenColors.includes(color)).map((color) => (
+          <button key={color} onClick={() => chooseColor(color)}>
+            {color}
+          </button>
+        ))
+      ) : (
+        !allHere && (
+          <div>
+            <div>Waiting Room</div>
+            <div>{`${takenColors.length} users have joined`}</div>
+            <button>settings</button>
+            <button onClick={() => handleAllHere()}>we're all here</button>
+          </div>
+        )
+      )}
     </>
   )
 }
