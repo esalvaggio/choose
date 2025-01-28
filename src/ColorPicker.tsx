@@ -8,8 +8,7 @@ function ColorPicker({ session }: { session: ISession }) {
   const [takenColors, setTakenColors] = useState<string[]>([])
   const COLORS = ["white", "yellow", "teal", "green", "magenta", "red", "blue", "black", "grey"]
   const { sessionId } = useParams()
-  const { setUserData } = useUser()
-  const [choseColor, setChoseColor] = useState<boolean>(false)
+  const { userData, setUserData } = useUser()
   const [allHere, setAllHere] = useState<boolean>(false)
 
   useEffect(() => {
@@ -35,7 +34,6 @@ function ColorPicker({ session }: { session: ISession }) {
       return
     }
     setUserData(color, sessionId!)
-    setChoseColor(true)
   }
 
   const handleAllHere = async () => {
@@ -54,7 +52,7 @@ function ColorPicker({ session }: { session: ISession }) {
 
   return (
     <>
-      {(!choseColor && !allHere) ? (
+      {!userData.color ? (
         COLORS.filter((color) => !takenColors.includes(color)).map((color) => (
           <button key={color} onClick={() => chooseColor(color)}>
             {color}
