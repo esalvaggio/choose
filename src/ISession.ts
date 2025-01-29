@@ -14,6 +14,7 @@ export interface ISession {
         ready: boolean;
     }[];
     current_round?: number
+    allowed_noms: number
 }
 
 export interface IFilm {

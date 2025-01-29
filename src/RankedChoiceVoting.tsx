@@ -1,11 +1,10 @@
-import { IFilm } from "./ISession"
+import { ISession } from "./ISession"
 
-function RankedChoiceVoting({ films, onSubmitRanking }: {
-    films: IFilm[]
-    onSubmitRanking: (ranking: string[]) => void
+function RankedChoiceVoting({ session }: {
+    session: ISession
 }) {
-    console.log(films, onSubmitRanking)
-    return <></>
+    console.log(session)
+    return <>Ranked Choice</>
 }
 
 export default RankedChoiceVoting; 

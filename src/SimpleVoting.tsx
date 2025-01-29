@@ -1,11 +1,10 @@
-import { IFilm } from "./ISession"
+import { ISession } from "./ISession"
 
-function SimpleVoting({ films, onVoteSubmit }: {
-    films: IFilm[]
-    onVoteSubmit: (selectedFilms: string[]) => void
+function SimpleVoting({ session }: {
+    session: ISession
 }) {
-    console.log(films, onVoteSubmit)
-    return <></>
+    console.log(session)
+    return <>Simple</>
 }
 
 export default SimpleVoting; 

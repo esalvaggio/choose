@@ -4,7 +4,7 @@ function Results({ session }: {
     session: ISession
 }) {
     console.log(session)
-    return <></>
+    return <>Results</>
 }
 
 export default Results; 

@@ -12,6 +12,7 @@ function ColorPicker({ session }: { session: ISession }) {
   const [allHere, setAllHere] = useState<boolean>(false)
   const [showSettings, setShowSettings] = useState<boolean>(false)
   const [selectedStrategy, setSelectedStrategy] = useState<'elimination' | 'ranked_choice' | 'simple_vote'>(session.voting_strategy)
+  const [allowedNoms, setAllowedNoms] = useState<number>(session.allowed_noms || 1)
 
   useEffect(() => {
     if (session) {
@@ -56,18 +57,21 @@ function ColorPicker({ session }: { session: ISession }) {
     const { error: updateError } = await supabase
       .from('sessions')
       .update({
-        voting_strategy: selectedStrategy
+        voting_strategy: selectedStrategy,
+        allowed_noms: allowedNoms
       })
       .eq('id', sessionId)
 
     if (updateError) {
-      console.error("Error updating voting strategy", updateError)
+      console.error("Error updating settings", updateError)
       return
     }
     setShowSettings(false)
   }
+
   const handleCloseSettings = () => {
     setSelectedStrategy(session.voting_strategy)
+    setAllowedNoms(session.allowed_noms || 1)
     setShowSettings(false)
   }
 
@@ -101,6 +105,13 @@ function ColorPicker({ session }: { session: ISession }) {
                   <option value="ranked_choice">ranked choice</option>
                   <option value="simple_vote">simple vote</option>
                 </select>
+                <div>nominations per person:</div>
+                <input
+                  type="number"
+                  min="1"
+                  value={allowedNoms}
+                  onChange={(e) => setAllowedNoms(Math.max(1, parseInt(e.target.value)))}
+                />
                 <button onClick={() => handleSaveSettings()}>save settings</button>
                 <button onClick={() => handleCloseSettings()}>go back</button>
               </>

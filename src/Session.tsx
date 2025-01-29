@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import supabase from "./supabaseClient";
 import { useEffect, useState } from "react";
 import { ISession } from "./ISession";
-// import EliminationVoting from "./EliminationVoting"
-// import RankedChoiceVoting from "./RankedChoiceVoting"
-// import SimpleVoting from "./SimpleVoting"
+import EliminationVoting from "./EliminationVoting"
+import RankedChoiceVoting from "./RankedChoiceVoting"
+import SimpleVoting from "./SimpleVoting"
 import ColorPicker from "./ColorPicker"
 import NominationPhase from "./NominationPhase"
 import { useUser } from "./contexts/UserContext";
@@ -40,7 +40,8 @@ export default function Session() {
           voting_strategy: 'elimination',
           stage: 'color',
           users: [],
-          current_round: 0
+          current_round: 0,
+          allowed_noms: 1
         }
         const { data: createdSession, error } = await supabase
           .from('sessions')
@@ -84,79 +85,7 @@ export default function Session() {
     return () => { channel.unsubscribe() }
   }, [sessionId])
 
-  // const submitVote = async (vote: any) => {
-  //   if (!myColor || !session) return
 
-  //   const userIndex = session.users.findIndex(u => u.color === myColor)
-  //   if (userIndex === -1) return
-
-  //   const updatedUsers = [...session.users]
-
-  //   switch (session.voting_strategy) {
-  //     case 'elimination':
-  //       updatedUsers[userIndex].votes = {
-  //         eliminated_choice: vote as string
-  //       }
-  //       break
-  //     case 'ranked_choice':
-  //       updatedUsers[userIndex].votes = {
-  //         ranked_choices: vote as string[]
-  //       }
-  //       break
-  //     case 'simple_vote':
-  //       updatedUsers[userIndex].votes = {
-  //         selected_films: vote as string[]
-  //       }
-  //       break
-  //   }
-  // }
-
-
-  const nominateFilm = async (title: string) => {
-    if (!userData.color || !session) return
-
-    const newFilm = {
-      title,
-      nominated_by: userData.color,
-      eliminated: false
-    }
-
-    await supabase
-      .from('sessions')
-      .update({
-        films: [...session.films, newFilm]
-      })
-      .eq('id', sessionId)
-  }
-
-  // const renderVotingPhase = () => {
-  //   if (!session || !myColor) return null
-
-  //   switch (session.voting_strategy) {
-  //     case 'elimination':
-  //       return (
-  //         <EliminationVoting
-  //           films={session.films.filter(f => !f.eliminated)}
-  //           onVote={(film: string) => submitVote(film)}
-  //           currentRound={session.current_round}
-  //         />
-  //       )
-  //     case 'ranked_choice':
-  //       return (
-  //         <RankedChoiceVoting
-  //           films={session.films}
-  //           onSubmitRanking={(ranking: string[]) => submitVote(ranking)}
-  //         />
-  //       )
-  //     case 'simple_vote':
-  //       return (
-  //         <SimpleVoting
-  //           films={session.films}
-  //           onVoteSubmit={(selectedFilms: string[]) => submitVote(selectedFilms)}
-  //         />
-  //       )
-  //   }
-  // }
   if (!session) return <div></div>
 
   return (
@@ -167,11 +96,28 @@ export default function Session() {
         <div>
           {session.stage === 'nom' && (
             <NominationPhase
-              onNominate={nominateFilm}
-              films={session.films}
+              session={session}
             />
           )}
-          {/* {session.stage === 'voting' && renderVotingPhase()} */}
+          {session.stage === 'vote' && (
+            <>
+              {session.voting_strategy === 'elimination' && (
+                <EliminationVoting
+                  session={session}
+                />
+              )}
+              {session.voting_strategy === 'ranked_choice' && (
+                <RankedChoiceVoting
+                  session={session}
+                />
+              )}
+              {session.voting_strategy === 'simple_vote' && (
+                <SimpleVoting
+                  session={session}
+                />
+              )}
+            </>
+          )}
           {session.stage === 'result' && (
             <Results
               session={session}

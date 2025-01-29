@@ -1,12 +1,10 @@
-import { IFilm } from "./ISession"
+import { ISession } from "./ISession"
 
-function EliminationVoting({ films, onVote, currentRound }: {
-    films: IFilm[] | undefined
-    onVote: (film: string) => void
-    currentRound: number | undefined
+function EliminationVoting({ session }: {
+    session: ISession
 }) {
-    console.log(films, onVote, currentRound)
-    return <></>
+    console.log(session)
+    return <>Elimination</>
 }
 
 export default EliminationVoting;
