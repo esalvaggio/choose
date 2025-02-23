@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import supabase from "./supabaseClient";
+import supabase from "../supabaseClient";
 import { useEffect, useState } from "react";
-import { ISession } from "./ISession";
+import { ISession } from "../interfaces/ISession";
 import EliminationVoting from "./EliminationVoting";
 import RankedChoiceVoting from "./RankedChoiceVoting";
 import SimpleVoting from "./SimpleVoting";
 import ColorPicker from "./ColorPicker";
 import NominationPhase from "./NominationPhase";
-import { useUser } from "./contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
 import Results from "./Results";
 
 export default function Session() {
@@ -37,7 +37,7 @@ export default function Session() {
         const newSession: ISession = {
           id: sessionId,
           films: [],
-          voting_strategy: "elimination",
+          voting_strategy: "simple_vote",
           stage: "color",
           users: [],
           current_round: 0,
@@ -57,7 +57,6 @@ export default function Session() {
           setSession(newSession);
         }
       } else {
-        console.log(existingSession);
         setSession(existingSession);
       }
     };

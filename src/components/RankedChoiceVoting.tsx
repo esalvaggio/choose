@@ -1,4 +1,4 @@
-import { ISession } from "./ISession";
+import { ISession } from "../interfaces/ISession";
 
 function RankedChoiceVoting({ session }: { session: ISession }) {
   console.log(session);

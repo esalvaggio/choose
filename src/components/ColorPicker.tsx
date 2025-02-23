@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import supabase from "./supabaseClient";
+import supabase from "../supabaseClient";
 import { useEffect, useState } from "react";
-import { useUser } from "./contexts/UserContext";
-import { ISession } from "./ISession";
+import { useUser } from "../contexts/UserContext";
+import { ISession } from "../interfaces/ISession";
 
 function ColorPicker({ session }: { session: ISession }) {
   const COLORS = [

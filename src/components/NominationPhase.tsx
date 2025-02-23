@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useUser } from "./contexts/UserContext";
-import { ISession } from "./ISession";
-import supabase from "./supabaseClient";
+import { useUser } from "../contexts/UserContext";
+import { ISession } from "../interfaces/ISession";
+import supabase from "../supabaseClient";
 
 function NominationPhase({ session }: { session: ISession }) {
   const { sessionId } = useParams();
@@ -71,7 +71,6 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleDone = async () => {
-    // set person to ready
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
@@ -81,10 +80,9 @@ function NominationPhase({ session }: { session: ISession }) {
       })
       .eq("id", sessionId);
     if (updateError) {
-      console.error("Error updating session stage", updateError);
+      console.error("Error updating user ready status", updateError);
       return;
     }
-    // setUserDone(true)
   };
 
   const handleSendToVote = async () => {
@@ -139,6 +137,7 @@ function NominationPhase({ session }: { session: ISession }) {
     </div>
   ) : (
     <div>
+      {/* will want to add the logic to handle duplicates here */}
       <div>waiting room</div>
       {!allUsersReady ? (
         <div># of people we're waiting on: {getRemainingUsers()}</div>

@@ -5,13 +5,11 @@ export interface ISession {
   films: IFilm[];
   stage: "color" | "nom" | "vote" | "result";
   users: {
-    votes: {
-      eliminated_choice?: string;
-      ranked_choices?: string[];
-      selected_films?: string[];
-    };
     color: string;
     ready: boolean;
+    votes: {
+      [filmTitle: string]: number;
+    };
   }[];
   current_round?: number;
   allowed_noms: number;
@@ -21,5 +19,4 @@ export interface IFilm {
   title: string;
   nominated_by: string;
   eliminated?: boolean;
-  votes?: number;
 }

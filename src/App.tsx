@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Lobby from "./lobby";
-import Session from "./Session";
+import Lobby from "./components/Lobby";
+import Session from "./components/Session";
 import { UserProvider } from "./contexts/UserContext";
 
 function App() {
