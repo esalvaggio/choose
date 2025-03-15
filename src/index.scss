@@ -1,6 +1,7 @@
 :root {
   font-family: monospace;
-  background-color: white;
+  background-color: #333333;
+  color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,5 +20,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
 }

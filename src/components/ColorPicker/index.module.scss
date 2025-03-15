@@ -1,0 +1,209 @@
+$background-dark: #333333;
+$text-color: white;
+
+$white: #C8C8C8;
+$whitegrey: #C8C8C8;
+$whiteblue: #C8C8D0;
+$yellow: #C8C800;
+$teal: #00C8C8;
+$green: #00C800;
+$magenta: #C800C8;
+$red: #C80000;
+$blue: #0000C8;
+$black: #000000;
+$grey: #2B2B2B;
+$navy: #00214C;
+$purple: #32006A;
+$dark-grey: #424141;
+$dark-orange: #D8760B;
+$orange-2: #F08C20;
+$orange-3: #F5A754;
+$orange-4: #F6BA79;
+$orange-5: #FFCF9C;
+$orange-6: #FFE0BF;
+$light-orange: #F6EBE0;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: $background-dark;
+  color: $text-color;
+}
+
+.title {
+  margin-top: 40px;
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.colorGrid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 800px;
+
+  @media (max-width: 600px) {
+    width: 90%;
+  }
+}
+
+.topRow, .middleRow, .bottomRow {
+  display: grid;
+  width: 70vw;
+  @media (max-width: 600px) {
+    width: 90%;
+  }
+}
+
+.topRow {
+  grid-template-columns: repeat(7, 1fr);
+  height: 45vh;
+  @media (max-width: 600px) {
+    height: 60vh;
+  }
+}
+
+.middleRow {
+  grid-template-columns: repeat(7, 1fr);
+  height: 4vh;
+}
+
+.bottomRow {
+  grid-template-columns: repeat(6, 1fr);
+  height: 15vh;
+  @media (max-width: 600px) {
+    height: 10vh;
+  }
+}
+
+.colorButton {
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.taken {
+    background-color: #333333;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+.white { background-color: $white; }
+.whitegrey { background-color: $whitegrey; }
+.whiteblue { background-color: $whiteblue; }
+.yellow { background-color: $yellow; }
+.teal { background-color: $teal; }
+.green { background-color: $green; }
+.magenta { background-color: $magenta; }
+.red { background-color: $red; }
+.blue { background-color: $blue; }
+.black { background-color: $black; }
+.grey { background-color: $grey; }
+.navy { background-color: $navy; }
+.purple { background-color: $purple; }
+.darkGrey { background-color: $dark-grey; }
+.darkOrange { background-color: $dark-orange; }
+.orange2 { background-color: $orange-2; }
+.orange3 { background-color: $orange-3; }
+.orange4 { background-color: $orange-4; }
+.orange5 { background-color: $orange-5; }
+.orange6 { background-color: $orange-6; }
+.lightOrange { background-color: $light-orange; }
+
+.waitingRoomContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+
+  .usersContainer {
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+    margin-top: 10vh;
+
+    .userColor {
+      flex: 1;
+      height: 33px;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .waitingContent {
+    text-align: center;
+    margin-top: 2rem;
+
+    .title {
+      margin-bottom: 1rem;
+    }
+
+    .joinedText {
+      font-size: 1.1rem;
+    }
+  }
+
+  .bottomContent {
+    margin-top: auto;
+    margin-bottom: 10vh;
+    
+    .buttonGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      
+      .button {
+        min-width: 200px;
+      }
+    }
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 8px 16px;
+  cursor: pointer;
+  min-width: 120px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.settingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.settingRow {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.select, .input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px;
+  width: 100%;
+}
