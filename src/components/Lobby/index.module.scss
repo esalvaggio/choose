@@ -4,17 +4,21 @@
     align-items: center;
     text-align: center;
     width: 100%;
-    min-height: 100vh;
+    min-height: -webkit-fill-available;
     justify-content: space-between;
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 
     .topSection {
         margin-top: 25vh;
+        margin-bottom: 20vh;
         width: 100%;
         font-size: 1.625rem;
     }
 
     .bottomSection {
-        margin-bottom: 10vh;
+        margin-bottom: max(10vh, env(safe-area-inset-bottom) + 40px);
         width: 100%;
         display: flex;
         flex-direction: column;
