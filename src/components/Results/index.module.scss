@@ -1,0 +1,52 @@
+@use '../../styles/shared.scss' as shared;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  text-align: center;
+  
+  // For light background colors, use dark text
+  &.white, &.whitegrey, &.whiteblue, &.yellow, &.orange5, &.orange6, &.lightOrange, &.green, &.teal {
+    color: shared.$black;
+  }
+  
+  // For all other (darker) colors, use white text
+  color: white;
+
+  .content {
+    width: 90%;
+    max-width: 360px;
+  }
+
+  .roundText {
+    font-size: 16px;
+    margin-bottom: 2rem;
+  }
+
+  .subheading {
+    font-size: 16px;
+    margin-bottom: 2rem;
+  }
+
+  .winningTitle {
+    font-size: 16px;
+    margin: 2rem 0;
+  }
+
+  .button {
+    @include shared.button;
+    border: 2px solid black;
+    background: white;
+    color: black;
+    width: 100%;
+    margin-top: 2rem;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
