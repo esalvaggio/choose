@@ -62,14 +62,8 @@
       flex-direction: column;
       gap: 1rem;
       margin: 2rem 0;
-
       input {
-        width: 100%;
-        padding: 8px 16px;
-        box-sizing: border-box;
-        background: white;
-        border: none;
-        min-height: 48px;
+        @include shared.input;
       }
     }
   }
@@ -93,7 +87,6 @@
   }
 }
 
-// Waiting room styles
 .waitingRoom {
   text-align: center;
   margin-top: 2rem;
