@@ -107,7 +107,7 @@ function NominationPhase({ session }: { session: ISession }) {
     <div>
       <div>your color: {userData.color}</div>
       <div>
-        <h3>nominated films</h3>
+        {/* <h3></h3> */}
         <ul>
           {session.films
             .filter((film) => film.nominated_by === userData.color)
@@ -126,11 +126,11 @@ function NominationPhase({ session }: { session: ISession }) {
           type="text"
           value={newFilm}
           onChange={(e) => setNewFilm(e.target.value)}
-          placeholder="enter film title"
+          placeholder="enter a nom"
           disabled={remainingNoms <= 0}
         />
         <button disabled={remainingNoms <= 0} type="submit">
-          Nominate Film
+          nominate something
         </button>
       </form>
       <button onClick={() => handleDone()}>i'm done</button>

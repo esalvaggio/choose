@@ -155,52 +155,56 @@ function ColorPicker({ session }: { session: ISession }) {
             </div>
             <div className={styles.waitingContent}>
               <h2 className={styles.title}>waiting room</h2>
-              <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person' : 'people'} have joined`}</div>
+              <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you lol) has joined' : 'people have joined'}`}</div>
             </div>
             
             <div className={styles.bottomContent}>
               {!showSettings ? (
                 <div className={styles.buttonGroup}>
-                  <button className={styles.button} onClick={() => setShowSettings(true)}>
-                    settings
-                  </button>
                   <button className={styles.button} onClick={() => handleAllHere()}>
                     we're all here
+                  </button>
+                  <button className={styles.button + ' ' + styles.settingsButton} onClick={() => setShowSettings(true)}>
+                    settings
                   </button>
                 </div>
               ) : (
                 <div className={styles.settingsContainer}>
                   <div className={styles.settingRow}>
                     <div>voting strategy:</div>
-                    <select
-                      className={styles.select}
-                      value={selectedStrategy}
-                      onChange={(e) =>
-                        setSelectedStrategy(
-                          e.target.value as
-                          | "elimination"
-                          | "ranked_choice"
-                          | "simple_vote",
-                        )
-                      }
-                    >
-                      <option value="elimination">elimination</option>
-                      <option value="ranked_choice">ranked choice</option>
-                      <option value="simple_vote">simple vote</option>
-                    </select>
+                    <div className={styles.inputWrapper}>
+                      <select
+                        className={styles.select}
+                        value={selectedStrategy}
+                        onChange={(e) =>
+                          setSelectedStrategy(
+                            e.target.value as
+                            | "elimination"
+                            | "ranked_choice"
+                            | "simple_vote",
+                          )
+                        }
+                      >
+                        <option value="elimination">elimination</option>
+                        <option value="ranked_choice">ranked choice</option>
+                        <option value="simple_vote">simple vote</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className={styles.settingRow}>
                     <div>nominations per person:</div>
-                    <input
-                      className={styles.input}
-                      type="number"
-                      min="1"
-                      value={allowedNoms}
-                      onChange={(e) =>
-                        setAllowedNoms(Math.max(1, parseInt(e.target.value)))
-                      }
-                    />
+                    <div className={styles.inputWrapper}>
+                      <input
+                        className={styles.input}
+                        type="number"
+                        min="1"
+                        value={allowedNoms}
+                        onChange={(e) =>
+                          setAllowedNoms(Math.max(1, parseInt(e.target.value)))
+                        }
+                      />
+                    </div>
                   </div>
 
                   <div className={styles.buttonGroup}>
@@ -211,7 +215,7 @@ function ColorPicker({ session }: { session: ISession }) {
                       save settings
                     </button>
                     <button
-                      className={styles.button}
+                      className={styles.button + ' ' + styles.settingsButton}
                       onClick={() => handleCloseSettings()}
                     >
                       go back

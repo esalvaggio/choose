@@ -5,6 +5,7 @@ import supabase from "../supabaseClient";
 import { useState } from "react";
 
 function SimpleVoting({ session }: { session: ISession }) {
+// need to prevent voting if you don't pick a color, just put them in the waiting room
   const { sessionId } = useParams();
   const { userData } = useUser();
   const [chosenFilm, setChosenFilm] = useState("");
