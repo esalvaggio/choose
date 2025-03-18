@@ -4,6 +4,7 @@ import { useUser } from "../../contexts/UserContext";
 import { ISession } from "../../interfaces/ISession";
 import supabase from "../../supabaseClient";
 import styles from './index.module.scss';
+import { UserColorBar } from "../UserColorBar/index";
 
 function NominationPhase({ session }: { session: ISession }) {
   const { sessionId } = useParams();
@@ -106,7 +107,7 @@ function NominationPhase({ session }: { session: ISession }) {
   const allUsersReady = session.users.every((user) => user.ready);
   return setToVote ? null : !currUserReady ? (
     <div className={styles.container}>
-      <div className={`${styles.userColorBar} ${styles[userData.color || '']}`} />
+      <UserColorBar colors={userData.color ? [userData.color] : []} />
       <div className={styles.content}>
         <h2 className={styles.title}>nominate something</h2>
         
@@ -148,7 +149,7 @@ function NominationPhase({ session }: { session: ISession }) {
     </div>
   ) : (
     <div className={`${styles.container} ${styles.waitingRoom}`}>
-      <div className={`${styles.userColorBar} ${styles[userData.color || '']}`} />
+      <UserColorBar colors={userData.color ? [userData.color] : []} />
       <div className={styles.content}>
         <h2 className={styles.title}>waiting room</h2>
         {!allUsersReady ? (

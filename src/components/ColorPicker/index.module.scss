@@ -1,38 +1,13 @@
 @use '../../styles/shared.scss' as shared;
 
-$background-dark: #333333;
-$text-color: white;
-
-$white: #C8C8C8;
-$whitegrey: #C8C8C8;
-$whiteblue: #C8C8D0;
-$yellow: #C8C800;
-$teal: #00C8C8;
-$green: #00C800;
-$magenta: #C800C8;
-$red: #C80000;
-$blue: #0000C8;
-$black: #000000;
-$grey: #2B2B2B;
-$navy: #00214C;
-$purple: #32006A;
-$dark-grey: #424141;
-$dark-orange: #D8760B;
-$orange-2: #F08C20;
-$orange-3: #F5A754;
-$orange-4: #F6BA79;
-$orange-5: #FFCF9C;
-$orange-6: #FFE0BF;
-$light-orange: #F6EBE0;
-
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: $background-dark;
-  color: $text-color;
+  background-color: shared.$background-dark;
+  color: shared.$text-color;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
@@ -126,19 +101,6 @@ $light-orange: #F6EBE0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  .usersContainer {
-    display: flex;
-    flex-direction: row;
-    width: 75%;
-    margin-top: 10vh;
-
-    .userColor {
-      flex: 1;
-      height: 28px;
-      transition: all 0.3s ease;
-    }
-  }
-
   .waitingContent {
     text-align: center;
     margin-top: 2rem;
@@ -205,9 +167,10 @@ $light-orange: #F6EBE0;
 .select, .input {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  color: shared.$text-color;
   padding: 8px 16px;
   width: 100%;
   box-sizing: border-box;
   min-height: 48px;
+  font-size: 16px;
 }

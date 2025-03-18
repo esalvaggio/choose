@@ -11,13 +11,6 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  .userColorBar {
-    width: 75%;
-    height: 33px;
-    margin-top: 10vh;
-    transition: all 0.3s ease;
-  }
-
   .content {
     text-align: center;
     margin-top: 2rem;
@@ -44,7 +37,7 @@
         .deleteButton {
           background: none;
           border: none;
-          color: white;
+          color: shared.$text-color;
           cursor: pointer;
           padding: 0 8px;
           font-size: 1.2rem;

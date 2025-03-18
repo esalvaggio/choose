@@ -1,0 +1,14 @@
+@use '../../styles/shared.scss' as shared;
+
+.usersContainer {
+  display: flex;
+  flex-direction: row;
+  width: 75%;
+  margin-top: 5vh;
+
+  .userColor {
+    flex: 1;
+    height: 28px;
+    transition: all 0.3s ease;
+  }
+} 

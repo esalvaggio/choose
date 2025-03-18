@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import { ISession } from "../../interfaces/ISession";
 import styles from "./index.module.scss";
+import { UserColorBar } from "../UserColorBar/index";
 
 function ColorPicker({ session }: { session: ISession }) {
   const TOP_ROW_COLORS = [
@@ -148,11 +149,7 @@ function ColorPicker({ session }: { session: ISession }) {
       ) : (
         !allHere && (
           <div className={styles.waitingRoomContainer}>
-            <div className={styles.usersContainer}>
-              {takenColors.map((color) => (
-                <div key={color} className={`${styles.userColor} ${styles[color]}`} />
-              ))}
-            </div>
+            <UserColorBar colors={takenColors} />
             <div className={styles.waitingContent}>
               <h2 className={styles.title}>waiting room</h2>
               <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you lol) has joined' : 'people have joined'}`}</div>
