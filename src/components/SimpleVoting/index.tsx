@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useUser } from "../contexts/UserContext";
-import { ISession } from "../interfaces/ISession";
-import supabase from "../supabaseClient";
+import { useUser } from "../../contexts/UserContext";
+import { ISession } from "../../interfaces/ISession";
+import supabase from "../../supabaseClient";
 import { useState } from "react";
+import styles from "./index.module.scss";
 
 function SimpleVoting({ session }: { session: ISession }) {
 // need to prevent voting if you don't pick a color, just put them in the waiting room
@@ -61,36 +62,54 @@ function SimpleVoting({ session }: { session: ISession }) {
   );
 
   return sendToResults ? null : !currUserVoted ? (
-    <div>
-      <div>vote for the one you want</div>
-      {session.films.map((film) => (
-        <li key={film.title}>
-          {film.nominated_by} - <span>{film.title}</span>
-          <input
-            type="radio"
-            name="film-choice"
-            checked={chosenFilm === film.title}
-            onChange={() => setChosenFilm(film.title)}
-          />
-        </li>
-      ))}
-      <button onClick={vote} disabled={!chosenFilm}>
-        submit
-      </button>
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <h2 className={styles.title}>this is round: 1</h2>
+        <div className={styles.subtitle}>vote for the one you do want</div>
+        
+        <ul className={styles.nominationsList}>
+          {session.films.map((film) => (
+            <li key={film.title}>
+              <div className={`${styles.colorBar} ${styles[film.nominated_by]}`} />
+              <span className={styles.filmTitle}>{film.title}</span>
+              <input
+                type="radio"
+                name="film-choice"
+                checked={chosenFilm === film.title}
+                onChange={() => setChosenFilm(film.title)}
+                className={styles.radioInput}
+              />
+            </li>
+          ))}
+        </ul>
+
+        <button 
+          className={styles.button} 
+          onClick={vote} 
+          disabled={!chosenFilm}
+        >
+          submit
+        </button>
+      </div>
     </div>
   ) : (
-    <div>
-      <div>waiting room</div>
-      {!allUsersVoted ? (
-        <div># of people we're waiting on: {getRemainingUsers()}</div>
-      ) : (
-        <div>everyone has voted</div>
-      )}
-      {allUsersVoted && (
-        <button onClick={() => handleSendToResults()}>
-          see results!
-        </button>
-      )}
+    <div className={`${styles.container} ${styles.waitingRoom}`}>
+      <div className={styles.content}>
+        <h2 className={styles.title}>waiting room</h2>
+        {!allUsersVoted ? (
+          <div># of people we're waiting on: {getRemainingUsers()}</div>
+        ) : (
+          <div>everyone has voted</div>
+        )}
+        {allUsersVoted && (
+          <button 
+            className={`${styles.button} ${styles.dark}`} 
+            onClick={() => handleSendToResults()}
+          >
+            see results!
+          </button>
+        )}
+      </div>
     </div>
   );
 }
