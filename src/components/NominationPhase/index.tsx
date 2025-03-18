@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useUser } from "../contexts/UserContext";
-import { ISession } from "../interfaces/ISession";
-import supabase from "../supabaseClient";
-import styles from './NominationPhase.module.scss';
+import { useUser } from "../../contexts/UserContext";
+import { ISession } from "../../interfaces/ISession";
+import supabase from "../../supabaseClient";
+import styles from './index.module.scss';
 
 function NominationPhase({ session }: { session: ISession }) {
   const { sessionId } = useParams();
