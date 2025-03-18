@@ -34,7 +34,7 @@ export default function Lobby() {
                 <button className={styles.button} type="submit">join</button>
             </form>
             <span className={styles.or}>or</span>
-            <button className={`${styles.button} ${styles.create}`} onClick={() => navigate(sessionId)}>
+            <button className={`${styles.button} ${styles.dark}`} onClick={() => navigate(sessionId)}>
                 create a new session
             </button>
         </div>

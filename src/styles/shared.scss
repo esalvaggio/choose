@@ -1,0 +1,75 @@
+// Colors
+$white: #C8C8C8;
+$whitegrey: #C8C8C8;
+$whiteblue: #C8C8D0;
+$yellow: #C8C800;
+$teal: #00C8C8;
+$green: #00C800;
+$magenta: #C800C8;
+$red: #C80000;
+$blue: #0000C8;
+$black: #000000;
+$grey: #2B2B2B;
+$navy: #00214C;
+$purple: #32006A;
+$dark-grey: #424141;
+$dark-orange: #D8760B;
+$orange-2: #F08C20;
+$orange-3: #F5A754;
+$orange-4: #F6BA79;
+$orange-5: #FFCF9C;
+$orange-6: #FFE0BF;
+$light-orange: #F6EBE0;
+
+// Color classes
+.white { background-color: $white; }
+.whitegrey { background-color: $whitegrey; }
+.whiteblue { background-color: $whiteblue; }
+.yellow { background-color: $yellow; }
+.teal { background-color: $teal; }
+.green { background-color: $green; }
+.magenta { background-color: $magenta; }
+.red { background-color: $red; }
+.blue { background-color: $blue; }
+.black { background-color: $black; }
+.grey { background-color: $grey; }
+.navy { background-color: $navy; }
+.purple { background-color: $purple; }
+.darkGrey { background-color: $dark-grey; }
+.darkOrange { background-color: $dark-orange; }
+.orange2 { background-color: $orange-2; }
+.orange3 { background-color: $orange-3; }
+.orange4 { background-color: $orange-4; }
+.orange5 { background-color: $orange-5; }
+.orange6 { background-color: $orange-6; }
+.lightOrange { background-color: $light-orange; }
+
+@mixin button($variant: 'default') {
+  border: 2px solid black;
+  background-color: white;
+  font-size: 1.125rem;
+  width: 100%;
+  max-width: 360px;
+  min-height: 48px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  color: black;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @if $variant == 'dark' {
+    background-color: rgb(34, 34, 34);
+    color: white;
+    &:hover {
+      background-color: rgba(34, 34, 34, 0.8);
+    }
+  }
+} 

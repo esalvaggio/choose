@@ -1,3 +1,5 @@
+@use '../../styles/shared.scss' as shared;
+
 .mainContainer {
     display: flex;
     flex-direction: column;
@@ -52,30 +54,9 @@
     }
 
     .button {
-        border: 2px solid black;
-        background-color: white;
-        font-size: 1.125rem;
-        width: 100%;
-        max-width: 360px;
-        min-height: 48px;
-        padding: 1rem;
-        margin: 0.5rem 0;
-        cursor: pointer;
-        color: black;
-        &:hover {
-            background-color: #f0f0f0;
-        }
-
-        &.create {
-            background-color: rgb(34, 34, 34);
-            color: white;
-            &:hover {
-                background-color: rgba(34, 34, 34, 0.8);
-            }
-        }
-
-        @media (max-width: 768px) {
-            width: 90%;
+        @include shared.button;
+        &.dark {
+            @include shared.button('dark');
         }
     }
 

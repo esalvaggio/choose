@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { ISession } from "../interfaces/ISession";
 import supabase from "../supabaseClient";
+import styles from './NominationPhase.module.scss';
 
 function NominationPhase({ session }: { session: ISession }) {
   const { sessionId } = useParams();
@@ -99,62 +100,78 @@ function NominationPhase({ session }: { session: ISession }) {
     setSendToVote(true);
   };
 
-  const currUserReady = session.users.find(
+  const currUserReady = !userData.color || session.users.find(
     (u) => u.color === userData.color,
   )?.ready;
   const allUsersReady = session.users.every((user) => user.ready);
   return setToVote ? null : !currUserReady ? (
-    <div>
-      <div>your color: {userData.color}</div>
-      <div>
-        {/* <h3></h3> */}
-        <ul>
+    <div className={styles.container}>
+      <div className={`${styles.userColorBar} ${styles[userData.color || '']}`} />
+      <div className={styles.content}>
+        <h2 className={styles.title}>nominate something</h2>
+        
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={newFilm}
+            onChange={(e) => setNewFilm(e.target.value)}
+            placeholder="enter nomination..."
+            disabled={remainingNoms <= 0}
+          />
+          <button className={styles.button} disabled={remainingNoms <= 0} type="submit">
+            submit
+          </button>
+        </form>
+
+        <div className={styles.remainingNoms}>
+          # of remaining nominations: {remainingNoms}
+        </div>
+
+        <div>your nominations so far:</div>
+        <ul className={styles.nominationsList}>
           {session.films
             .filter((film) => film.nominated_by === userData.color)
             .map((film) => (
               <li key={film.title}>
                 {film.title}
-                <button onClick={() => deleteNomination(film.title)}>×</button>
+                <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
               </li>
             ))}
         </ul>
-        <div>number of remaining noms: {remainingNoms}</div>
-      </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={newFilm}
-          onChange={(e) => setNewFilm(e.target.value)}
-          placeholder="enter a nom"
-          disabled={remainingNoms <= 0}
-        />
-        <button disabled={remainingNoms <= 0} type="submit">
-          nominate something
-        </button>
-      </form>
-      <button onClick={() => handleDone()}>i'm done</button>
+        <div className={styles.bottomContent}>
+          <button className={styles.button + ' ' + styles.dark} onClick={() => handleDone()}>
+            i'm done
+          </button>
+        </div>
+      </div>
     </div>
   ) : (
-    <div>
-      {/* will want to add the logic to handle duplicates here */}
-      <div>waiting room</div>
-      {!allUsersReady ? (
-        <div># of people we're waiting on: {getRemainingUsers()}</div>
-      ) : (
-        <div>these are your noms</div>
-      )}
-      {session.films.map((film) => (
-        <li key={film.title}>
-          {film.nominated_by} -{" "}
-          <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
-            {film.title}
-          </span>
-        </li>
-      ))}
-      {allUsersReady && (
-        <button onClick={() => handleSendToVote()}>we're all ready to vote!</button>
-      )}
+    <div className={`${styles.container} ${styles.waitingRoom}`}>
+      <div className={`${styles.userColorBar} ${styles[userData.color || '']}`} />
+      <div className={styles.content}>
+        <h2 className={styles.title}>waiting room</h2>
+        {!allUsersReady ? (
+          <div># of people we're waiting on: {getRemainingUsers()}</div>
+        ) : (
+          <div>these are your noms</div>
+        )}
+        <ul className={styles.nominationsList}>
+          {session.films.map((film) => (
+            <li key={film.title}>
+              {film.nominated_by} -{" "}
+              <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
+                {film.title}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {allUsersReady && (
+          <button className={`${styles.button} ${styles.dark}`} onClick={() => handleSendToVote()}>
+            we're all ready to vote!
+          </button>
+        )}
+      </div>
     </div>
   );
 }
