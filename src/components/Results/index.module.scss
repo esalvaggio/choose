@@ -4,9 +4,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   text-align: center;
   
   // For light background colors, use dark text
@@ -20,6 +24,7 @@
   .content {
     width: 90%;
     max-width: 360px;
+    margin: auto 0;
   }
 
   .roundText {
@@ -42,8 +47,10 @@
     border: 2px solid black;
     background: white;
     color: black;
-    width: 100%;
-    margin-top: 2rem;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    margin-top: auto;
+    margin-bottom: calc(env(safe-area-inset-bottom) + 20px);
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);

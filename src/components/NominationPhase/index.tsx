@@ -124,53 +124,61 @@ function NominationPhase({ session }: { session: ISession }) {
           </button>
         </form>
 
-        <div className={styles.remainingNoms}>
-          # of remaining nominations: {remainingNoms}
+        <div className={styles.nominationsContainer}>
+          <div className={styles.remainingNoms}>
+            # of remaining nominations: {remainingNoms}
+          </div>
+
+          <div>your nominations so far:</div>
+          <ul className={styles.nominationsList}>
+            {session.films
+              .filter((film) => film.nominated_by === userData.color)
+              .map((film) => (
+                <li key={film.title}>
+                  {film.title}
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                </li>
+              ))}
+          </ul>
         </div>
 
-        <div>your nominations so far:</div>
-        <ul className={styles.nominationsList}>
-          {session.films
-            .filter((film) => film.nominated_by === userData.color)
-            .map((film) => (
-              <li key={film.title}>
-                {film.title}
-                <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
-              </li>
-            ))}
-        </ul>
-
         <div className={styles.bottomContent}>
-          <button className={styles.button + ' ' + styles.dark} onClick={() => handleDone()}>
+          <button className={`${styles.button} ${styles.dark}`} onClick={() => handleDone()}>
             i'm done
           </button>
         </div>
       </div>
     </div>
   ) : (
-    <div className={`${styles.container} ${styles.waitingRoom}`}>
+    <div className={styles.container}>
       <UserColorBar colors={userData.color ? [userData.color] : []} />
       <div className={styles.content}>
         <h2 className={styles.title}>waiting room</h2>
-        {!allUsersReady ? (
-          <div># of people we're waiting on: {getRemainingUsers()}</div>
-        ) : (
-          <div>these are your noms</div>
-        )}
-        <ul className={styles.nominationsList}>
-          {session.films.map((film) => (
-            <li key={film.title}>
-              {film.nominated_by} -{" "}
-              <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
-                {film.title}
-              </span>
-            </li>
-          ))}
-        </ul>
+        
+        <div className={styles.nominationsContainer}>
+          {!allUsersReady ? (
+            <div># of people we're waiting on: {getRemainingUsers()}</div>
+          ) : (
+            <div>these are your noms</div>
+          )}
+          <ul className={styles.nominationsList}>
+            {session.films.map((film) => (
+              <li key={film.title}>
+                {film.nominated_by} -{" "}
+                <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
+                  {film.title}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {allUsersReady && (
-          <button className={`${styles.button} ${styles.dark}`} onClick={() => handleSendToVote()}>
-            we're all ready to vote!
-          </button>
+          <div className={styles.bottomContent}>
+            <button className={`${styles.button} ${styles.dark}`} onClick={() => handleSendToVote()}>
+              we're all ready to vote!
+            </button>
+          </div>
         )}
       </div>
     </div>

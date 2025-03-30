@@ -67,47 +67,57 @@ function SimpleVoting({ session }: { session: ISession }) {
         <h2 className={styles.title}>this is round: 1</h2>
         <div className={styles.subtitle}>vote for the one you do want</div>
         
-        <ul className={styles.nominationsList}>
-          {session.films.map((film) => (
-            <li key={film.title}>
-              <div className={`${styles.colorBar} ${styles[film.nominated_by]}`} />
-              <span className={styles.filmTitle}>{film.title}</span>
-              <input
-                type="radio"
-                name="film-choice"
-                checked={chosenFilm === film.title}
-                onChange={() => setChosenFilm(film.title)}
-                className={styles.radioInput}
-              />
-            </li>
-          ))}
-        </ul>
+        <div className={styles.votingContainer}>
+          <ul className={styles.nominationsList}>
+            {session.films.map((film) => (
+              <li key={film.title}>
+                <div className={`${styles.colorBar} ${styles[film.nominated_by]}`} />
+                <span className={styles.filmTitle}>{film.title}</span>
+                <input
+                  type="radio"
+                  name="film-choice"
+                  checked={chosenFilm === film.title}
+                  onChange={() => setChosenFilm(film.title)}
+                  className={styles.radioInput}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <button 
-          className={styles.button} 
-          onClick={vote} 
-          disabled={!chosenFilm}
-        >
-          submit
-        </button>
+        <div className={styles.bottomContent}>
+          <button 
+            className={styles.button} 
+            onClick={vote} 
+            disabled={!chosenFilm}
+          >
+            submit
+          </button>
+        </div>
       </div>
     </div>
   ) : (
-    <div className={`${styles.container} ${styles.waitingRoom}`}>
+    <div className={styles.container}>
       <div className={styles.content}>
         <h2 className={styles.title}>waiting room</h2>
-        {!allUsersVoted ? (
-          <div># of people we're waiting on: {getRemainingUsers()}</div>
-        ) : (
-          <div>everyone has voted</div>
-        )}
+        
+        <div className={styles.votingContainer}>
+          {!allUsersVoted ? (
+            <div># of people we're waiting on: {getRemainingUsers()}</div>
+          ) : (
+            <div>everyone has voted</div>
+          )}
+        </div>
+
         {allUsersVoted && (
-          <button 
-            className={`${styles.button} ${styles.dark}`} 
-            onClick={() => handleSendToResults()}
-          >
-            see results!
-          </button>
+          <div className={styles.bottomContent}>
+            <button 
+              className={`${styles.button} ${styles.dark}`} 
+              onClick={() => handleSendToResults()}
+            >
+              see results!
+            </button>
+          </div>
         )}
       </div>
     </div>

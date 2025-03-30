@@ -5,17 +5,21 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  padding-bottom: max(env(safe-area-inset-bottom), 20px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 
   .content {
     text-align: center;
-    margin-top: 2rem;
+    padding-top: 2rem;
     width: 90%;
     max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     .title {
       font-size: 16px;
@@ -29,55 +33,70 @@
       text-align: center;
     }
 
-    .nominationsList {
-      list-style: none;
-      padding: 0;
-      margin: 2rem 0;
-      
-      li {
-        display: grid;
-        grid-template-columns: 80px 1fr 24px;
-        align-items: center;
-        gap: 1rem;
-        margin: 1rem 0;
-        text-align: left;
+    .votingContainer {
+      flex: 1;
+      overflow-y: auto;
+      margin: 1rem 0;
+      padding-bottom: 1rem;
 
-        .colorBar {
-          width: 80px;
-          height: 24px;
-        }
-
-        .filmTitle {
-          font-size: 16px;
-        }
-
-        .radioInput {
-          width: 24px;
-          height: 24px;
-          cursor: pointer;
-          margin: 0;
+      .nominationsList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        li {
+          display: grid;
+          grid-template-columns: 80px 1fr 24px;
+          align-items: center;
+          gap: 1rem;
+          margin: 1rem 0;
+          text-align: left;
+  
+          .colorBar {
+            width: 80px;
+            height: 24px;
+          }
+  
+          .filmTitle {
+            font-size: 16px;
+          }
+  
+          .radioInput {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin: 0;
+          }
         }
       }
     }
   }
 
-  .button {
-    @include shared.button;
+  .bottomContent {
+    width: 100%;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
     margin-top: auto;
-    background: white;
-    color: black;
-    border: none;
-    font-size: 16px;
-    width: 90%;
-    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    &.dark {
-      @include shared.button('dark');
+    .button {
+      @include shared.button;
+      width: calc(100% - 40px);
+      max-width: 400px;
+      background: white;
+      color: black;
+      border: none;
+      font-size: 16px;
+
+      &.dark {
+        @include shared.button('dark');
+      }
     }
   }
 }
 
 .waitingRoom {
   text-align: center;
-  margin-top: 2rem;
+  padding-top: 2rem;
 } 

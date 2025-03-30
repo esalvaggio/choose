@@ -9,11 +9,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html, body, #root {
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+#root {
+  height: 100vh;
+  /* mobile viewport bug fix */
+  height: -webkit-fill-available;
+  overflow: hidden;
   background: transparent;
 }
 
@@ -30,10 +46,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
 }
 
 button, input, textarea, select {

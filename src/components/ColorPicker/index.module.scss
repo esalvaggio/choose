@@ -4,20 +4,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background-color: shared.$background-dark;
   color: shared.$text-color;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-
-  @media (max-width: 600px) {
-    justify-content: normal;
-    min-height: 0;
-  }
 
   .button {
     @include shared.button;
+    width: calc(100% - 40px);
+    max-width: 400px;
 
     &.settingsButton {
       @include shared.button('dark');
@@ -26,7 +26,7 @@
 }
 
 .title {
-  margin-top: 40px;
+  padding-top: 40px;
   font-size: 24px;
   font-weight: normal;
 
@@ -41,10 +41,7 @@
   align-items: center;
   width: 90%;
   max-width: 800px;
-
-  @media (max-width: 600px) {
-    width: 90%;
-  }
+  margin: auto 0;
 }
 
 .topRow, .middleRow, .bottomRow {
@@ -97,13 +94,16 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 
   .waitingContent {
     text-align: center;
-    margin-top: 2rem;
+    padding-top: 2rem;
 
     .title {
       margin-bottom: 1rem;
@@ -116,9 +116,8 @@
 
   .bottomContent {
     margin-top: auto;
-    margin-bottom: max(12vh, 40px);
-    padding-bottom: max(env(safe-area-inset-bottom), 20px);
     width: 100%;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
     
     .buttonGroup {
       display: flex;
@@ -127,7 +126,8 @@
       align-items: center;
       
       .button {
-        min-width: 200px;
+        width: calc(100% - 40px);
+        max-width: 400px;
       }
     }
   }

@@ -5,17 +5,21 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  padding-bottom: max(env(safe-area-inset-bottom), 20px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 
   .content {
     text-align: center;
-    margin-top: 2rem;
-    width: 100%;
+    padding-top: 2rem;
+    width: 90%;
     max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     .title {
       font-size: 24px;
@@ -23,66 +27,83 @@
       margin-bottom: 2rem;
     }
 
-    .nominationsList {
-      list-style: none;
-      padding: 0;
-      margin: 1rem 0;
-
-      li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 0.5rem 0;
-
-        .deleteButton {
-          background: none;
-          border: none;
-          color: shared.$text-color;
-          cursor: pointer;
-          padding: 0 8px;
-          font-size: 1.2rem;
-        }
-      }
-    }
-
-    .remainingNoms {
-      margin: 1rem 0;
-      font-size: 1.1rem;
-    }
-
     form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      margin: 2rem 0;
+      margin-bottom: 1rem;
       input {
         @include shared.input;
       }
     }
-  }
 
-  .button {
-    @include shared.button;
+    .button {
+      @include shared.button;
+      width: 100%;
 
-    &.dark {
-      @include shared.button('dark');
+      &.dark {
+        @include shared.button('dark');
+      }
+    }
+
+    .nominationsContainer {
+      flex: 1;
+      overflow-y: auto;
+      margin: 1rem 0;
+      padding-bottom: 1rem;
+
+      .nominationsList {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+  
+        li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 0.5rem 0;
+  
+          .deleteButton {
+            background: none;
+            border: none;
+            color: shared.$text-color;
+            cursor: pointer;
+            padding: 0 8px;
+            font-size: 1.2rem;
+          }
+        }
+      }
+  
+      .remainingNoms {
+        margin: 1rem 0;
+        font-size: 1.1rem;
+      }
     }
   }
 
   .bottomContent {
-    margin-top: auto;
-    margin-bottom: max(5vh, 40px);
-    padding-bottom: max(env(safe-area-inset-bottom), 20px);
     width: 100%;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .button {
+      @include shared.button;
+      width: calc(100% - 40px);
+      max-width: 400px;
+
+      &.dark {
+        @include shared.button('dark');
+      }
+    }
   }
 }
 
 .waitingRoom {
   text-align: center;
-  margin-top: 2rem;
+  padding-top: 2rem;
 
   .title {
     font-size: 24px;
