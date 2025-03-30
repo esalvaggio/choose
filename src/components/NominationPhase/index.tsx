@@ -18,6 +18,17 @@ function NominationPhase({ session }: { session: ISession }) {
       alert("You've reached your nomination limit!");
       return;
     }
+
+    // Check for duplicate nominations
+    const isDuplicate = session.films.some(film => 
+      film.title.toLowerCase() === title.toLowerCase()
+    );
+    
+    if (isDuplicate) {
+      alert("someone (maybe you) has already made this nomination");
+      return;
+    }
+
     const newFilm = {
       title,
       nominated_by: userData.color,
@@ -134,7 +145,7 @@ function NominationPhase({ session }: { session: ISession }) {
             {session.films
               .filter((film) => film.nominated_by === userData.color)
               .map((film) => (
-                <li key={film.title}>
+                <li key={`${film.nominated_by}-${film.title}`}>
                   {film.title}
                   <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
                 </li>
