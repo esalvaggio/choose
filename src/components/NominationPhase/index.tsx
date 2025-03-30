@@ -175,6 +175,7 @@ function NominationPhase({ session }: { session: ISession }) {
           ) : (
             <div>these are your noms</div>
           )}
+          {/* maybe allow the admin to delete duplicates here */}
           <ul className={styles.nominationsList}>
             {session.films.map((film) => (
               <li key={film.title}>

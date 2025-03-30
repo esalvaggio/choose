@@ -24,36 +24,39 @@
   .content {
     width: 90%;
     max-width: 360px;
-    margin: auto 0;
-  }
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
-  .roundText {
-    font-size: 16px;
-    margin-bottom: 2rem;
-  }
+    .roundText {
+      font-size: 16px;
+      margin-bottom: 2rem;
+    }
 
-  .subheading {
-    font-size: 16px;
-    margin-bottom: 2rem;
-  }
+    .subheading {
+      font-size: 16px;
+      margin-bottom: 2rem;
+      margin-top: auto;
+    }
 
-  .winningTitle {
-    font-size: 16px;
-    margin: 2rem 0;
-  }
+    .winningTitle {
+      font-size: 16px;
+      margin: 2rem 0;
+    }
 
-  .button {
-    @include shared.button;
-    border: 2px solid black;
-    background: white;
-    color: black;
-    width: calc(100% - 40px);
-    max-width: 400px;
-    margin-top: auto;
-    margin-bottom: calc(env(safe-area-inset-bottom) + 20px);
+    .button {
+      @include shared.button;
+      border: 2px solid black;
+      background: white;
+      color: black;
+      width: 100%;
+      max-width: 400px;
+      margin: auto auto calc(env(safe-area-inset-bottom) + 20px);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      &:hover {
+        background: white;
+        opacity: 0.8;
+      }
     }
   }
 }
