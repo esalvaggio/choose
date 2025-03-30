@@ -19,13 +19,16 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
 
-    // Check for duplicate nominations
-    const isDuplicate = session.films.some(film => 
+    const duplicateFilm = session.films.find(film => 
       film.title.toLowerCase() === title.toLowerCase()
     );
     
-    if (isDuplicate) {
-      alert("someone (maybe you) has already made this nomination");
+    if (duplicateFilm) {
+      if (duplicateFilm.nominated_by === userData.color) {
+        alert("you already nominated this silly");
+      } else {
+        alert("someone else already nominated this lol");
+      }
       return;
     }
 
