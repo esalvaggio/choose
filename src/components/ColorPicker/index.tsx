@@ -152,7 +152,7 @@ function ColorPicker({ session }: { session: ISession }) {
             <UserColorBar colors={takenColors} />
             <div className={styles.waitingContent}>
               <h2 className={styles.title}>waiting room</h2>
-              <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you lol) has joined' : 'people have joined'}`}</div>
+              <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you) has joined' : 'people have joined'}`}</div>
             </div>
             
             <div className={styles.bottomContent}>

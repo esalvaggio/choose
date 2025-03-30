@@ -143,7 +143,7 @@ function NominationPhase({ session }: { session: ISession }) {
         </div>
 
         <div className={styles.bottomContent}>
-          <button className={`${styles.button} ${styles.dark}`} onClick={() => handleDone()}>
+          <button className={styles.button} onClick={() => handleDone()}>
             i'm done
           </button>
         </div>
@@ -155,7 +155,7 @@ function NominationPhase({ session }: { session: ISession }) {
       <div className={styles.content}>
         <h2 className={styles.title}>waiting room</h2>
         
-        <div className={styles.nominationsContainer}>
+        <div className={styles.waitingRoom}>
           {!allUsersReady ? (
             <div># of people we're waiting on: {getRemainingUsers()}</div>
           ) : (
@@ -164,7 +164,7 @@ function NominationPhase({ session }: { session: ISession }) {
           <ul className={styles.nominationsList}>
             {session.films.map((film) => (
               <li key={film.title}>
-                {film.nominated_by} -{" "}
+                <div className={`${styles.colorBar} ${styles[film.nominated_by]}`} />
                 <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
                   {film.title}
                 </span>
@@ -175,7 +175,7 @@ function NominationPhase({ session }: { session: ISession }) {
 
         {allUsersReady && (
           <div className={styles.bottomContent}>
-            <button className={`${styles.button} ${styles.dark}`} onClick={() => handleSendToVote()}>
+            <button className={styles.button} onClick={() => handleSendToVote()}>
               we're all ready to vote!
             </button>
           </div>
