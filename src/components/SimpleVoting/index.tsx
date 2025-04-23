@@ -25,13 +25,13 @@ function SimpleVoting({ session }: { session: ISession }) {
     if (allUsersVoted) {
       const voteCounts = calculateVoteCounts();
       const { filmsWithMaxVotes } = findMaxVotedFilms(voteCounts);
-      
+
       // If there's a tie (more than one film with max votes)
       if (filmsWithMaxVotes.length > 1) {
-        const tiedFilmsData = session.current_round_films?.filter(film => 
+        const tiedFilmsData = session.current_round_films?.filter(film =>
           filmsWithMaxVotes.includes(film.title)
         ) || [];
-        
+
         setTiedFilms(tiedFilmsData);
         setShowTieOptions(true);
       } else {
@@ -56,7 +56,7 @@ function SimpleVoting({ session }: { session: ISession }) {
 
   const calculateVoteCounts = () => {
     const voteCounts: Record<string, number> = {};
-    
+
     // Count votes for each film
     session.users.forEach(user => {
       Object.keys(user.votes || {}).forEach(filmTitle => {
@@ -67,19 +67,19 @@ function SimpleVoting({ session }: { session: ISession }) {
         }
       });
     });
-    
+
     return voteCounts;
   };
 
   const findMaxVotedFilms = (voteCounts: Record<string, number>) => {
     const votes = Object.values(voteCounts);
     const maxVotes = votes.length > 0 ? Math.max(...votes) : 0;
-    
+
     // Find films with max votes
     const filmsWithMaxVotes = Object.keys(voteCounts).filter(
       film => voteCounts[film] === maxVotes
     );
-    
+
     return { maxVotes, filmsWithMaxVotes };
   };
 
@@ -108,12 +108,12 @@ function SimpleVoting({ session }: { session: ISession }) {
     // Calculate the winner(s) first
     const voteCounts = calculateVoteCounts();
     const { filmsWithMaxVotes } = findMaxVotedFilms(voteCounts);
-    
+
     // Get the winning film objects
-    const winningFilms = session.films.filter(film => 
+    const winningFilms = session.films.filter(film =>
       filmsWithMaxVotes.includes(film.title)
     );
-    
+
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
@@ -122,7 +122,7 @@ function SimpleVoting({ session }: { session: ISession }) {
         allow_multiple_winners: filmsWithMaxVotes.length > 1
       })
       .eq("id", sessionId);
-      
+
     if (updateError) {
       console.error("Error updating session stage", updateError);
       return;
@@ -144,12 +144,12 @@ function SimpleVoting({ session }: { session: ISession }) {
         current_round_films: tiedFilms
       })
       .eq("id", sessionId);
-    
+
     if (updateError) {
       console.error("Error starting tiebreaker round", updateError);
       return;
     }
-    
+
     setChosenFilm("");
     setShowTieOptions(false);
   };
@@ -164,12 +164,12 @@ function SimpleVoting({ session }: { session: ISession }) {
         stage: "result",
       })
       .eq("id", sessionId);
-    
+
     if (updateError) {
       console.error("Error accepting multiple winners", updateError);
       return;
     }
-    
+
     setSendToResults(true);
   };
 
@@ -184,18 +184,18 @@ function SimpleVoting({ session }: { session: ISession }) {
   const getEliminatedFilms = () => {
     // Only show eliminated films after round 1 or when we have a tie situation
     if (session.round <= 1 && !showTieOptions) return [];
-    
+
     // If we have tied films but haven't started the next round yet
     if (showTieOptions && tiedFilms.length > 0) {
       // Films are eliminated if they're in the current round but not in the tied films
-      return session.current_round_films?.filter(film => 
+      return session.current_round_films?.filter(film =>
         !tiedFilms.some(tiedFilm => tiedFilm.title === film.title)
       ) || [];
     }
-    
+
     // Standard case: find films that are in the full list but not in current round
-    return session.films.filter(film => 
-      !session.current_round_films?.some(currentFilm => 
+    return session.films.filter(film =>
+      !session.current_round_films?.some(currentFilm =>
         currentFilm.title === film.title
       )
     );
@@ -219,22 +219,22 @@ function SimpleVoting({ session }: { session: ISession }) {
   const eliminatedFilms = getEliminatedFilms();
   // const hasTieBreaker = tiedFilms.length > 1;
 
-  if (!isUserInSession) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h2 className={styles.title}>waiting room</h2>
-          <div className={styles.subtitle}>waiting for your turn...</div>
-        </div>
-      </div>
-    );
-  }
+  // if (!isUserInSession) {
+  //   return (
+  //     <div className={styles.container}>
+  //       <div className={styles.content}>
+  //         <h2 className={styles.title}>waiting room</h2>
+  //         <div className={styles.subtitle}>waiting for your turn...</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (sendToResults) {
     return null;
   }
 
-  return !currUserVoted ? (
+  return !currUserVoted && isUserInSession ? (
     <div className={styles.container}>
       <div className={styles.content}>
         <h2 className={styles.title}>this is round: {session.round}</h2>
@@ -244,7 +244,7 @@ function SimpleVoting({ session }: { session: ISession }) {
             : "vote for the one you do want"
           }
         </div>
-        
+
         <div className={styles.votingContainer}>
           <ul className={styles.nominationsList}>
             {filmsToDisplay.map((film) => (
@@ -264,9 +264,9 @@ function SimpleVoting({ session }: { session: ISession }) {
         </div>
 
         <div className={styles.bottomContent}>
-          <button 
-            className={styles.button} 
-            onClick={vote} 
+          <button
+            className={styles.button}
+            onClick={vote}
             disabled={!chosenFilm}
           >
             submit
@@ -277,18 +277,17 @@ function SimpleVoting({ session }: { session: ISession }) {
   ) : (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h2 className={styles.title}>waiting room</h2>
-        
+
         <div className={styles.votingContainer}>
           {!allUsersVoted ? (
             <div># of people we're waiting on: {getRemainingUsers()}</div>
           ) : (
-            <div>everyone has voted</div>
+            <h3>everyone has voted</h3>
           )}
-          
+
           {(session.round > 1 || showTieOptions) && eliminatedFilms.length > 0 && (
             <div className={styles.eliminatedFilms}>
-              <h3>the following have been eliminated:</h3>
+              <h3>the following {eliminatedFilms.length === 1 ? 'has' : 'have'} been eliminated:</h3>
               <ul>
                 {eliminatedFilms.map(film => (
                   <li key={film.title} className={styles.eliminatedFilm}>
@@ -301,33 +300,41 @@ function SimpleVoting({ session }: { session: ISession }) {
           )}
         </div>
 
-        {allUsersVoted && (
+        {isUserInSession && allUsersVoted && (
           <div className={styles.bottomContent}>
             {showTieOptions ? (
               <>
                 <div className={styles.tieMessage}>
                   there's a tie!
                 </div>
-                <button 
-                  className={`${styles.button}`} 
-                  onClick={startTiebreakerRound}
-                >
-                  start tie-breaker round
-                </button>
-                <button 
-                  className={`${styles.button} ${styles.dark}`} 
-                  onClick={acceptMultipleWinners}
-                >
-                  accept multiple winners
-                </button>
+                {isUserInSession && (
+                  <>
+                    <button
+                      className={`${styles.button}`}
+                      onClick={startTiebreakerRound}
+                    >
+                      start tie-breaker round
+                    </button>
+                    <button
+                      className={`${styles.button} ${styles.dark}`}
+                      onClick={acceptMultipleWinners}
+                    >
+                      accept multiple winners
+                    </button>
+                  </>
+                )}
               </>
             ) : (
-              <button 
-                className={`${styles.button} ${styles.dark}`} 
-                onClick={() => handleSendToResults()}
-              >
-                see results!
-              </button>
+              <>
+                {isUserInSession && (
+                  <button
+                    className={`${styles.button} ${styles.dark}`}
+                    onClick={() => handleSendToResults()}
+                  >
+                    see results!
+                  </button>
+                )}
+              </>
             )}
           </div>
         )}
