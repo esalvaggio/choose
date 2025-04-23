@@ -43,6 +43,17 @@
       font-size: 16px;
       margin: 2rem 0;
     }
+    
+    .winningTitles {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .winningTitle {
+        margin: 0.5rem 0;
+        font-weight: bold;
+      }
+    }
 
     .button {
       @include shared.button;

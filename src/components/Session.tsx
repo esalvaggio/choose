@@ -40,7 +40,10 @@ export default function Session() {
           voting_strategy: "simple_vote",
           stage: "color",
           users: [],
-          current_round: 0,
+          round: 1,
+          current_round_films: [],
+          winners: [],
+          allow_multiple_winners: false,
           allowed_noms: 1,
         };
         const { data: createdSession, error } = await supabase
