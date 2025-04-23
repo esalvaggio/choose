@@ -215,20 +215,9 @@ function SimpleVoting({ session }: { session: ISession }) {
     ? session.current_round_films
     : session.films;
   console.log(session)
-  // Get eliminated films for display
-  const eliminatedFilms = getEliminatedFilms();
-  // const hasTieBreaker = tiedFilms.length > 1;
 
-  // if (!isUserInSession) {
-  //   return (
-  //     <div className={styles.container}>
-  //       <div className={styles.content}>
-  //         <h2 className={styles.title}>waiting room</h2>
-  //         <div className={styles.subtitle}>waiting for your turn...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  const eliminatedFilms = getEliminatedFilms();
+
 
   if (sendToResults) {
     return null;
@@ -287,11 +276,11 @@ function SimpleVoting({ session }: { session: ISession }) {
 
           {(session.round > 1 || showTieOptions) && eliminatedFilms.length > 0 && (
             <div className={styles.eliminatedFilms}>
-              <h3>the following {eliminatedFilms.length === 1 ? 'has' : 'have'} been eliminated:</h3>
+              <h3>the following {eliminatedFilms.length === 1 ? 'has' : 'have'} been <span className={styles.bold}>eliminated</span>:</h3>
               <ul>
                 {eliminatedFilms.map(film => (
                   <li key={film.title} className={styles.eliminatedFilm}>
-                    <div className={`${styles.colorDot} ${styles[film.nominated_by]}`} />
+                    <div className={`${styles.colorBar} ${styles[film.nominated_by]}`} />
                     <span>{film.title}</span>
                   </li>
                 ))}
