@@ -20,6 +20,35 @@
   
   // For all other (darker) colors, use white text
   color: white;
+  
+  &.splitBackground {
+    background: transparent;
+    color: white;
+  }
+
+  .backgroundSections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    
+    .bgSection {
+      height: 100%;
+    }
+  }
+
+  .backgroundOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 0;
+  }
 
   .content {
     width: 90%;
@@ -27,6 +56,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
+    z-index: 1; // Ensure content is above the background sections and overlay
 
     .roundText {
       font-size: 16px;
@@ -42,6 +73,17 @@
     .winningTitle {
       font-size: 16px;
       margin: 2rem 0;
+    }
+    
+    .winningTitles {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .winningTitle {
+        margin: 0.5rem 0;
+        font-weight: bold;
+      }
     }
 
     .button {

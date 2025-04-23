@@ -11,7 +11,10 @@ export interface ISession {
       [filmTitle: string]: number;
     };
   }[];
-  current_round?: number;
+  round: number;
+  current_round_films?: IFilm[];
+  winners?: IFilm[];
+  allow_multiple_winners?: boolean;
   allowed_noms: number;
 }
 

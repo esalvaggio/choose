@@ -25,7 +25,7 @@ function EliminationVoting({ session }: { session: ISession }) {
   return (
     <div>
       <div>vote for the one you don't want</div>
-      <div>this is round {session.current_round}</div>
+      <div>this is round {session.round}</div>
       {session.films.map((film) => (
         <li key={film.title}>
           {film.nominated_by} -{" "}
