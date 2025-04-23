@@ -182,8 +182,8 @@ function ColorPicker({ session }: { session: ISession }) {
                           )
                         }
                       >
-                        <option value="elimination">elimination</option>
-                        <option value="ranked_choice">ranked choice</option>
+                        <option disabled={true} value="elimination">elimination - not yet implemented</option>
+                        <option disabled={true} value="ranked_choice">ranked choice - not yet implemented</option>
                         <option value="simple_vote">simple vote</option>
                       </select>
                     </div>

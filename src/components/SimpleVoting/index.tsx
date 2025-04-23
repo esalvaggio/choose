@@ -271,12 +271,14 @@ function SimpleVoting({ session }: { session: ISession }) {
           {!allUsersVoted ? (
             <div># of people we're waiting on: {getRemainingUsers()}</div>
           ) : (
-            <h3>everyone has voted</h3>
+            <h3>everyone has voted!</h3>
           )}
 
-          {(session.round > 1 || showTieOptions) && eliminatedFilms.length > 0 && (
+          {showTieOptions && eliminatedFilms.length > 0 && (
             <div className={styles.eliminatedFilms}>
-              <h3>the following {eliminatedFilms.length === 1 ? 'has' : 'have'} been <span className={styles.bold}>eliminated</span>:</h3>
+              {session.round > 1 && (
+                <h3>the following {eliminatedFilms.length === 1 ? 'has' : 'have'} been <span className={styles.bold}>eliminated</span>:</h3>
+              )}
               <ul>
                 {eliminatedFilms.map(film => (
                   <li key={film.title} className={styles.eliminatedFilm}>

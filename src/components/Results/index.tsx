@@ -8,6 +8,16 @@ function Results({ session }: { session: ISession }) {
   // Use the winners field if available
   const winners = session.winners || [];
   
+  // Create the background classnames for multiple winners
+  const getBackgroundClass = (winners: any[]) => {
+    if (winners.length === 1) {
+      return styles[winners[0].nominated_by || winners[0].title]; 
+    }
+    
+    // For multiple winners, use a split-background container
+    return styles.splitBackground;
+  };
+  
   // If no winners in the field, calculate them
   if (winners.length === 0) {
     const films = session.films.map((film) => ({
@@ -36,14 +46,21 @@ function Results({ session }: { session: ISession }) {
     // Get all films with the max count as winners
     const winningFilms = films.filter(film => film.count === maxCount);
     
-    // Use the first winner as the primary (for background color)
-    const primaryWinner = winningFilms[0];
-    
     return (
-      <div className={`${styles.container} ${styles[primaryWinner.nominatedBy]}`}>
+      <div className={`${styles.container} ${getBackgroundClass(winningFilms)}`}>
+        {winningFilms.length > 1 && (
+          <div className={styles.backgroundSections}>
+            {winningFilms.map((film, index) => (
+              <div 
+                key={film.filmTitle} 
+                className={`${styles.bgSection} ${styles[film.nominatedBy]}`}
+                style={{ width: `${100 / winningFilms.length}%` }}
+              />
+            ))}
+          </div>
+        )}
+        <div className={styles.backgroundOverlay}></div>
         <div className={styles.content}>
-          {session.round > 1 && <div className={styles.roundText}>final round: {session.round}</div>}
-          
           {winningFilms.length > 1 ? (
             <>
               <div className={styles.subheading}>it's a tie! winners:</div>
@@ -58,7 +75,7 @@ function Results({ session }: { session: ISession }) {
           ) : (
             <>
               <div className={styles.subheading}>the following has been chosen:</div>
-              <div className={styles.winningTitle}>{primaryWinner.filmTitle}</div>
+              <div className={styles.winningTitle}>{winningFilms[0].filmTitle}</div>
             </>
           )}
           
@@ -73,16 +90,21 @@ function Results({ session }: { session: ISession }) {
     );
   }
   
-  // Use the winners field directly if available
-  // Get the first winner as the primary (for background color)
-  const primaryWinner = winners[0];
-  console.log(winners)
-  
   return (
-    <div className={`${styles.container} ${styles[primaryWinner.nominated_by]}`}>
+    <div className={`${styles.container} ${getBackgroundClass(winners)}`}>
+      {winners.length > 1 && (
+        <div className={styles.backgroundSections}>
+          {winners.map((film, index) => (
+            <div 
+              key={film.title} 
+              className={`${styles.bgSection} ${styles[film.nominated_by]}`}
+              style={{ width: `${100 / winners.length}%` }}
+            />
+          ))}
+        </div>
+      )}
+      <div className={styles.backgroundOverlay}></div>
       <div className={styles.content}>
-        {session.round > 1 && <div className={styles.roundText}>final round: {session.round}</div>}
-        
         {session.allow_multiple_winners && winners.length > 1 ? (
           <>
             <div className={styles.subheading}>it's a tie! winners:</div>
@@ -97,7 +119,7 @@ function Results({ session }: { session: ISession }) {
         ) : (
           <>
             <div className={styles.subheading}>the following has been chosen:</div>
-            <div className={styles.winningTitle}>{primaryWinner.title}</div>
+            <div className={styles.winningTitle}>{winners[0].title}</div>
           </>
         )}
         
