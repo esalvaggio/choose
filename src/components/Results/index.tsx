@@ -50,7 +50,7 @@ function Results({ session }: { session: ISession }) {
       <div className={`${styles.container} ${getBackgroundClass(winningFilms)}`}>
         {winningFilms.length > 1 && (
           <div className={styles.backgroundSections}>
-            {winningFilms.map((film, index) => (
+            {winningFilms.map((film) => (
               <div 
                 key={film.filmTitle} 
                 className={`${styles.bgSection} ${styles[film.nominatedBy]}`}
@@ -94,7 +94,7 @@ function Results({ session }: { session: ISession }) {
     <div className={`${styles.container} ${getBackgroundClass(winners)}`}>
       {winners.length > 1 && (
         <div className={styles.backgroundSections}>
-          {winners.map((film, index) => (
+          {winners.map((film) => (
             <div 
               key={film.title} 
               className={`${styles.bgSection} ${styles[film.nominated_by]}`}
