@@ -13,7 +13,7 @@ export default function Lobby() {
 
   // load word list
   useEffect(() => {
-    fetch('/src/data/wordList.txt')
+    fetch('/wordList.txt')
       .then(response => response.text())
       .then(text => {
         const words = text.split('\n').filter(word => word.trim() !== '');
