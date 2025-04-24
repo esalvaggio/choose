@@ -190,7 +190,7 @@ function NominationPhase({ session }: { session: ISession }) {
 
         {allUsersReady && (
           <div className={styles.bottomContent}>
-            <button className={styles.button} onClick={() => handleSendToVote()}>
+            <button className={`${styles.button} ${styles.primary}`} onClick={() => handleSendToVote()}>
               we're all ready to vote!
             </button>
           </div>

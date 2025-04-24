@@ -22,6 +22,7 @@ $orange-4: #F6BA79;
 $orange-5: #FFCF9C;
 $orange-6: #FFE0BF;
 $light-orange: #F6EBE0;
+$primary-blue: #0c4884;
 
 // Color classes
 .white { background-color: $white; }
@@ -45,6 +46,7 @@ $light-orange: #F6EBE0;
 .orange5 { background-color: $orange-5; }
 .orange6 { background-color: $orange-6; }
 .lightOrange { background-color: $light-orange; }
+.primaryBlue { background-color: $primary-blue; }
 
 @mixin button($variant: 'default') {
   border: 2px solid black;
@@ -64,7 +66,7 @@ $light-orange: #F6EBE0;
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.7;
     cursor: not-allowed;
   }
 
@@ -73,6 +75,14 @@ $light-orange: #F6EBE0;
     color: white;
     &:hover {
       background-color: rgba(34, 34, 34, 0.8);
+    }
+  }
+  
+  @if $variant == 'primary' {
+    background-color: $primary-blue;
+    color: #dfdfdf;
+    &:hover {
+      background-color: darken($primary-blue, 5%);
     }
   }
 }
