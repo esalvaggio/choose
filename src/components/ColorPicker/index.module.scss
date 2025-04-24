@@ -22,6 +22,10 @@
     &.settingsButton {
       @include shared.button('dark');
     }
+
+    &.primary {
+      @include shared.button('primary');
+    }
   }
 }
 
