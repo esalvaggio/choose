@@ -46,7 +46,7 @@ export default function Lobby() {
     let sessionId = generateRandomSessionId();
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("sessions")
         .select("id")
         .eq("id", sessionId)
@@ -95,7 +95,7 @@ export default function Lobby() {
       // Generate and check a session ID
       let sessionId = generateRandomSessionId();
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("sessions")
           .select("id")
           .eq("id", sessionId)

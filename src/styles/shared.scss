@@ -1,4 +1,6 @@
 // Colors
+@use "sass:color";
+
 $background-dark: #333333;
 $text-color: white;
 $white: #C8C8C8;
@@ -82,7 +84,7 @@ $primary-blue: #0c4884;
     background-color: $primary-blue;
     color: #dfdfdf;
     &:hover {
-      background-color: darken($primary-blue, 5%);
+      background-color: color.adjust($primary-blue, $lightness: -5%);
     }
   }
 }
@@ -100,9 +102,11 @@ $primary-blue: #0c4884;
         opacity: 0.5;
         background-color: #f0f0f0;
         cursor: not-allowed;
-      }
+    }
 
-    @media (max-width: 768px) {
-        margin: 0 auto;
+    & {
+        @media (max-width: 768px) {
+            margin: 0 auto;
+        }
     }
 }
