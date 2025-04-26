@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
-import { ISession } from "../../interfaces/ISession";
+import { ISession, IFilm } from "../../interfaces/ISession";
 import supabase from "../../supabaseClient";
 import { useState, useEffect, useCallback } from "react";
 import styles from "../SimpleVoting/index.module.scss";
@@ -11,6 +11,8 @@ function EliminationVoting({ session }: { session: ISession }) {
 
   const [chosenFilm, setChosenFilm] = useState<string>("");
   const [sendToResults, setSendToResults] = useState(false);
+  const [tiedFilms, setTiedFilms] = useState<IFilm[]>([]);
+  const [showTieOptions, setShowTieOptions] = useState(false);
 
   // derive the films in this round
   const currentFilms = session.current_round_films && session.current_round_films.length
@@ -59,6 +61,22 @@ function EliminationVoting({ session }: { session: ISession }) {
     (u) => !u.votes || Object.keys(u.votes).length === 0
   ).length;
 
+  // auto-detect full-tie when everyone has voted and all films tied
+  useEffect(() => {
+    if (allUsersVoted) {
+      const voteCounts = calculateVoteCounts();
+      const { filmsWithMaxVotes } = findMaxVotedFilms(voteCounts);
+      const toEliminate = currentFilms.filter(film =>
+        filmsWithMaxVotes.includes(film.title)
+      );
+      // if it would eliminate all remaining films, prompt for tie instead
+      if (toEliminate.length === currentFilms.length && currentFilms.length > 1) {
+        setTiedFilms(toEliminate);
+        setShowTieOptions(true);
+      }
+    }
+  }, [allUsersVoted, calculateVoteCounts, findMaxVotedFilms, currentFilms]);
+
   // cast a single elimination vote
   const vote = async () => {
     if (!chosenFilm) return;
@@ -85,18 +103,10 @@ function EliminationVoting({ session }: { session: ISession }) {
       filmsWithMaxVotes.includes(f.title)
     );
 
-    // if removing all would leave none, finalize all as winners
+    // if everyone tied (would eliminate all), show tie options instead of auto-finalizing
     if (toEliminate.length === currentFilms.length) {
-      const { error } = await supabase
-        .from("sessions")
-        .update({
-          stage: "result",
-          winners: currentFilms,
-          allow_multiple_winners: true,
-        })
-        .eq("id", sessionId);
-      if (error) console.error("Error finalizing results", error);
-      setSendToResults(true);
+      setTiedFilms(toEliminate);
+      setShowTieOptions(true);
       return;
     }
 
@@ -117,6 +127,35 @@ function EliminationVoting({ session }: { session: ISession }) {
     setChosenFilm("");
   };
 
+  // start another tie-breaker round with same films
+  const startTieBreakerRound = async () => {
+    const { error } = await supabase
+      .from("sessions")
+      .update({
+        users: session.users.map(u => ({ ...u, votes: {}, ready: false })),
+        round: session.round + 1,
+        current_round_films: tiedFilms
+      })
+      .eq("id", sessionId);
+    if (error) console.error("Error starting tie-breaker round", error);
+    setShowTieOptions(false);
+    setChosenFilm("");
+  };
+
+  // accept multiple winners as tie
+  const acceptMultipleWinners = async () => {
+    const { error } = await supabase
+      .from("sessions")
+      .update({
+        stage: "result",
+        winners: tiedFilms,
+        allow_multiple_winners: true
+      })
+      .eq("id", sessionId);
+    if (error) console.error("Error accepting multiple winners", error);
+    setSendToResults(true);
+  };
+
   if (sendToResults) {
     return null;
   }
@@ -127,7 +166,7 @@ function EliminationVoting({ session }: { session: ISession }) {
       <div className={styles.container}>
         <div className={styles.content}>
           <h2 className={styles.title}>round {session.round}</h2>
-          <div className={styles.subtitle}>vote to eliminate your least favorite</div>
+          <div className={styles.subtitle}>vote to eliminate your <strong>least favorite</strong></div>
           <div className={styles.votingContainer}>
             <ul className={styles.nominationsList}>
               {currentFilms.map((film) => (
@@ -191,13 +230,23 @@ function EliminationVoting({ session }: { session: ISession }) {
 
         {isUserInSession && allUsersVoted && (
           <div className={styles.bottomContent}>
-            {currentFilms.length > 1 ? (
+            {showTieOptions ? (
+              <>
+                <div className={styles.tieMessage}>there's a tie!</div>
+                <button className={styles.button} onClick={startTieBreakerRound}>
+                  start tie-breaker round
+                </button>
+                <button className={`${styles.button} ${styles.dark}`} onClick={acceptMultipleWinners}>
+                  accept multiple winners
+                </button>
+              </>
+            ) : currentFilms.length > 1 ? (
               <button className={styles.button} onClick={handleElimination}>
                 next round
               </button>
             ) : (
               <button
-                className={`${styles.button} ${styles.dark}`} 
+                className={`${styles.button} ${styles.dark}`}
                 onClick={handleElimination}
               >
                 see results

@@ -96,8 +96,7 @@
       margin: auto auto calc(env(safe-area-inset-bottom) + 20px);
 
       &:hover {
-        background: white;
-        opacity: 0.8;
+        background: #f0f0f0;
       }
     }
   }
