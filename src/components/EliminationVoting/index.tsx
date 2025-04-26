@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useUser } from "../contexts/UserContext";
-import { ISession } from "../interfaces/ISession";
-import supabase from "../supabaseClient";
+import { useUser } from "../../contexts/UserContext";
+import { ISession } from "../../interfaces/ISession";
+import supabase from "../../supabaseClient";
 
 function EliminationVoting({ session }: { session: ISession }) {
   // i want to keep doing rounds of elimination voting until there is only movie left
