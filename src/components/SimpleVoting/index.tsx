@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { ISession, IFilm } from "../../interfaces/ISession";
 import supabase from "../../supabaseClient";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "./index.module.scss";
 
 function SimpleVoting({ session }: { session: ISession }) {
   const { sessionId } = useParams();
   const { userData } = useUser();
+
   const [chosenFilm, setChosenFilm] = useState("");
   const [sendToResults, setSendToResults] = useState(false);
   const [tiedFilms, setTiedFilms] = useState<IFilm[]>([]);
@@ -54,7 +55,7 @@ function SimpleVoting({ session }: { session: ISession }) {
     }
   };
 
-  const calculateVoteCounts = () => {
+  const calculateVoteCounts = useCallback(() => {
     const voteCounts: Record<string, number> = {};
 
     // Count votes for each film
@@ -69,9 +70,9 @@ function SimpleVoting({ session }: { session: ISession }) {
     });
 
     return voteCounts;
-  };
+  }, [session.users]);
 
-  const findMaxVotedFilms = (voteCounts: Record<string, number>) => {
+  const findMaxVotedFilms = useCallback((voteCounts: Record<string, number>) => {
     const votes = Object.values(voteCounts);
     const maxVotes = votes.length > 0 ? Math.max(...votes) : 0;
 
@@ -81,7 +82,7 @@ function SimpleVoting({ session }: { session: ISession }) {
     );
 
     return { maxVotes, filmsWithMaxVotes };
-  };
+  }, []);
 
   const vote = async () => {
     const { error: updateError } = await supabase
@@ -201,23 +202,19 @@ function SimpleVoting({ session }: { session: ISession }) {
     );
   };
 
+  // Derived flags
   const currUserVoted = Object.keys(
     session.users.find((u) => u.color === userData.color)?.votes || {}
   ).length > 0;
-
   const allUsersVoted = session.users.length > 0 && session.users.every((user) =>
     user.votes && Object.keys(user.votes).length > 0
   );
-
   const isUserInSession = session.users.some(user => user.color === userData.color);
-  // Use the current_round_films for display or fallback to all films if needed
+  const remainingUsers = getRemainingUsers();
   const filmsToDisplay = session.current_round_films?.length
     ? session.current_round_films
     : session.films;
-  console.log(session)
-
   const eliminatedFilms = getEliminatedFilms();
-
 
   if (sendToResults) {
     return null;
@@ -230,7 +227,7 @@ function SimpleVoting({ session }: { session: ISession }) {
         <div className={styles.subtitle}>
           {session.round > 1
             ? "tie-breaker round: vote for your favorite"
-            : "vote for the one you do want"
+            : "vote for the one you want"
           }
         </div>
 
@@ -269,7 +266,7 @@ function SimpleVoting({ session }: { session: ISession }) {
 
         <div className={styles.votingContainer}>
           {!allUsersVoted ? (
-            <div># of people we're waiting on: {getRemainingUsers()}</div>
+            <div># of people we're waiting on: {remainingUsers}</div>
           ) : (
             <h3>everyone has voted!</h3>
           )}
