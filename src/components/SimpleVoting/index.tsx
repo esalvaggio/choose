@@ -230,7 +230,7 @@ function SimpleVoting({ session }: { session: ISession }) {
         <div className={styles.subtitle}>
           {session.round > 1
             ? "tie-breaker round: vote for your favorite"
-            : "vote for the one you do want"
+            : "vote for the one you want"
           }
         </div>
 
