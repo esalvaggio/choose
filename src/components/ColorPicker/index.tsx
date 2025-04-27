@@ -47,12 +47,29 @@ function ColorPicker({ session }: { session: ISession }) {
     session.allowed_noms || 1,
   );
   const isAdmin = userData.color === session.admin_color;
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (session) {
       setTakenColors(session.users.map((u: { color: any }) => u.color));
     }
   }, [session]);
+
+  useEffect(() => {
+    // Skip the initial render
+    if (selectedStrategy === session.voting_strategy && allowedNoms === session.allowed_noms) {
+      return;
+    }
+
+    // Debounce the save operation
+    const saveTimeout = setTimeout(() => {
+      if (isAdmin) {
+        saveSettings();
+      }
+    }, 500);
+
+    return () => clearTimeout(saveTimeout);
+  }, [selectedStrategy, allowedNoms]);
 
   const chooseColor = async (color: string) => {
     if (session.users.some((u: { color: string }) => u.color === color)) {
@@ -89,6 +106,8 @@ function ColorPicker({ session }: { session: ISession }) {
       .from("sessions")
       .update({
         stage: "nom",
+        voting_strategy: selectedStrategy,
+        allowed_noms: allowedNoms,
       })
       .eq("id", sessionId);
     if (updateError) {
@@ -98,9 +117,11 @@ function ColorPicker({ session }: { session: ISession }) {
     setAllHere(true);
   };
 
-  const handleSaveSettings = async () => {
+  const saveSettings = async () => {
     // Only the admin can change settings
     if (!isAdmin) return;
+    
+    setIsSaving(true);
 
     const { error: updateError } = await supabase
       .from("sessions")
@@ -112,8 +133,9 @@ function ColorPicker({ session }: { session: ISession }) {
 
     if (updateError) {
       console.error("Error updating settings", updateError);
-      return;
     }
+    
+    setIsSaving(false);
   };
 
   return (
@@ -193,6 +215,7 @@ function ColorPicker({ session }: { session: ISession }) {
                           <option value="elimination">elimination</option>
                           <option value="simple_vote">simple vote</option>
                         </select>
+                        {isSaving && <span className={styles.savingIndicator}>saving...</span>}
                       </div>
                     </div>
 
@@ -214,13 +237,8 @@ function ColorPicker({ session }: { session: ISession }) {
                     <div className={styles.buttonGroup}>
                       <button
                         className={styles.button}
-                        onClick={() => handleSaveSettings()}
-                      >
-                        save settings
-                      </button>
-                      <button
-                        className={`${styles.button} ${styles.primary}`}
                         onClick={() => handleAllHere()}
+                        disabled={isSaving}
                       >
                         we're all here
                       </button>
