@@ -16,6 +16,7 @@ export interface ISession {
   winners?: IFilm[];
   allow_multiple_winners?: boolean;
   allowed_noms: number;
+  admin_color?: string;
 }
 
 export interface IFilm {

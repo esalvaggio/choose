@@ -17,14 +17,14 @@
   .button {
     @include shared.button;
     width: calc(100% - 40px);
-    max-width: 400px;
+    max-width: 360px;
 
     &.settingsButton {
       @include shared.button('dark');
     }
 
     &.primary {
-      @include shared.button('primary');
+      @include shared.button('dark');
     }
   }
 }
@@ -129,17 +129,21 @@
       gap: 1rem;
       align-items: center;
       
-      .button {
-        width: calc(100% - 40px);
-        max-width: 400px;
-      }
     }
   }
 }
 
 .buttonGroup {
   display: flex;
+  flex-direction: column;
   gap: 10px;
+  align-items: center;
+  width: 100%;
+  
+  button {
+    width: calc(100% - 40px) !important;
+    max-width: 360px !important;
+  }
 }
 
 .settingsContainer {
@@ -153,7 +157,7 @@
 .settingRow {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
   margin-bottom: 10px;
   align-items: center;
   width: 100%;
@@ -163,7 +167,7 @@
   }
 
   .inputWrapper {
-    width: 100%;
+    width: calc(100% - 40px);
     max-width: 360px;
   }
 }
@@ -177,4 +181,41 @@
   box-sizing: border-box;
   min-height: 48px;
   font-size: 16px;
+}
+
+.disabledButton {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adminText {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.nonAdminMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  padding: 0 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.savingIndicator {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+  font-style: italic;
+  position: absolute;
+  right: 0;
+  top: 100%;
+}
+
+.inputWrapper {
+  width: calc(100% - 40px);
+  max-width: 360px;
+  position: relative;
 }

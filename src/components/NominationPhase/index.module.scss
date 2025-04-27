@@ -40,6 +40,7 @@
     .button {
       @include shared.button;
       width: 100%;
+      max-width: 360px;
 
       &.dark {
         @include shared.button('dark');
@@ -47,7 +48,7 @@
       
       &.primary {
         @include shared.button('primary');
-    }
+      }
     }
 
     .nominationsContainer {
@@ -80,10 +81,11 @@
           .deleteButton {
             background: none;
             border: none;
-            color: shared.$text-color;
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
             padding: 0 8px;
             font-size: 1.2rem;
+            margin-left: auto;
           }
         }
       }
@@ -105,8 +107,8 @@
 
     .button {
       @include shared.button;
-      width: calc(100% - 40px);
-      max-width: 400px;
+      width: 100%;
+      max-width: 360px;
 
       &.dark {
         @include shared.button('dark');
@@ -134,12 +136,36 @@
       align-items: center;
       width: 83%;
       margin: 10px auto;
+      position: relative;
 
       .colorBar {
         margin-right: 20px;
         width: 80px;
         height: 24px;
       }
+      
+      .deleteButton {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 0 8px;
+        font-size: 1.2rem;
+        margin-left: auto;
+      }
     }
   }
+}
+
+.noNominationsMessage {
+  margin: 1rem 0;
+}
+
+.waitingForAdmin {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  padding: 0 20px;
 }

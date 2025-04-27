@@ -11,6 +11,7 @@ function NominationPhase({ session }: { session: ISession }) {
   const { userData } = useUser();
   const [newFilm, setNewFilm] = useState("");
   const [setToVote, setSendToVote] = useState(false);
+  const isAdmin = userData.color === session.admin_color;
 
   const nominateFilm = async (title: string) => {
     const remainingNoms = getRemainingNoms();
@@ -19,10 +20,10 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
 
-    const duplicateFilm = session.films.find(film => 
+    const duplicateFilm = session.films.find(film =>
       film.title.toLowerCase() === title.toLowerCase()
     );
-    
+
     if (duplicateFilm) {
       if (duplicateFilm.nominated_by === userData.color) {
         alert("you already nominated this silly");
@@ -87,6 +88,7 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleDone = async () => {
+    // No longer require users to nominate films themselves
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
@@ -102,10 +104,17 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleSendToVote = async () => {
+    // Check if there are any nominations
+    if (session.films.length === 0) {
+      alert("There are no nominations to vote on. At least one nomination is required.");
+      return;
+    }
+
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
         stage: "vote",
+        current_round_films: session.films, // Ensure films are set for voting
       })
       .eq("id", sessionId);
     if (updateError) {
@@ -113,6 +122,19 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
     setSendToVote(true);
+  };
+
+  const handleReturnToNominations = async () => {
+    const { error: updateError } = await supabase
+      .from("sessions")
+      .update({
+        users: session.users.map(user => ({ ...user, ready: false })),
+      })
+      .eq("id", sessionId);
+    if (updateError) {
+      console.error("Error resetting nomination phase", updateError);
+      return;
+    }
   };
 
   const currUserReady = !userData.color || session.users.find(
@@ -124,7 +146,7 @@ function NominationPhase({ session }: { session: ISession }) {
       <UserColorBar colors={userData.color ? [userData.color] : []} />
       <div className={styles.content}>
         <h2 className={styles.title}>nominate something</h2>
-        
+
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -168,14 +190,14 @@ function NominationPhase({ session }: { session: ISession }) {
       <UserColorBar colors={userData.color ? [userData.color] : []} />
       <div className={styles.content}>
         <h2 className={styles.title}>waiting room</h2>
-        
+
         <div className={styles.waitingRoom}>
           {!allUsersReady ? (
             <div># of people we're waiting on: {getRemainingUsers()}</div>
           ) : (
-            <div>these are your noms</div>
+            <div>these are your noms:</div>
           )}
-          {/* maybe allow the admin to delete duplicates here */}
+          {/* Admin can delete nominations in this view */}
           <ul className={styles.nominationsList}>
             {session.films.map((film) => (
               <li key={film.title}>
@@ -183,16 +205,40 @@ function NominationPhase({ session }: { session: ISession }) {
                 <span style={!allUsersReady ? { filter: "blur(5px)" } : undefined}>
                   {film.title}
                 </span>
+                {isAdmin && allUsersReady && (
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                )}
               </li>
             ))}
           </ul>
+          {session.films.length === 0 && allUsersReady && (
+            <div className={styles.noNominationsMessage}>
+              nobody nominated anything!! go back and nominate something silly
+            </div>
+          )}
         </div>
 
         {allUsersReady && (
           <div className={styles.bottomContent}>
-            <button className={`${styles.button}`} onClick={() => handleSendToVote()}>
-              we're all ready to vote!
-            </button>
+            {session.films.length === 0 ? (
+              <button
+                className={`${styles.button}`}
+                onClick={() => handleReturnToNominations()}
+              >
+                return to nominations
+              </button>
+            ) : isAdmin ? (
+              <button
+                className={`${styles.button}`}
+                onClick={() => handleSendToVote()}
+              >
+                we're all ready to vote!
+              </button>
+            ) : (
+              <div className={styles.waitingForAdmin}>
+                waiting for the admin to start voting...
+              </div>
+            )}
           </div>
         )}
       </div>
