@@ -185,9 +185,14 @@ function ColorPicker({ session }: { session: ISession }) {
               <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you) has joined' : 'people have joined'}`}</div>
               {session.admin_color && (
                 <div className={styles.adminText}>
-                  {isAdmin
-                    ? "you are the admin"
-                    : ``}
+                  {isAdmin ? (
+                    <>
+                      you are the admin
+                      <div className={styles.adminSubtext}>(send the link to ur friends)</div>
+                    </>
+                  ) : (
+                    ``
+                  )}
                 </div>
               )}
             </div>
