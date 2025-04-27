@@ -1,0 +1,265 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rankingContainer {
+  padding: 20px;
+  background-color: var(--bg-elevated);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rankingList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rankingItem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: var(--bg-default);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.rankingItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rankNumber {
+  font-size: 18px;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  margin-right: 15px;
+}
+
+.filmInfo {
+  flex: 1;
+}
+
+.filmInfo h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+}
+
+.filmInfo p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.moveButton {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.moveButton:hover:not(:disabled) {
+  background-color: var(--primary);
+  color: white;
+}
+
+.moveButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.submitContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.submitButton {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.usersContainer, 
+.actionsContainer, 
+.waitingMessage {
+  padding: 15px;
+  background-color: var(--bg-elevated);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebarTitle {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.usersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.userItem:last-child {
+  border-bottom: none;
+}
+
+.userColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.userReady {
+  color: var(--success);
+}
+
+.readyIndicator {
+  margin-left: auto;
+  color: var(--success);
+}
+
+.nextButton {
+  width: 100%;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nextButton:hover {
+  background-color: var(--primary-dark);
+}
+
+.waitingMessage h3 {
+  margin-top: 0;
+  font-size: 14px;
+  color: var(--warning);
+}
+
+.waitingMessage ul {
+  padding-left: 20px;
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Tie styles */
+.tieOptions {
+  background-color: var(--bg-elevated);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.tiedFilms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.tiedFilm {
+  background-color: var(--bg-default);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.tieButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: var(--primary-dark);
+} 
