@@ -1,5 +1,5 @@
 import { useUser } from "../../contexts/UserContext";
-import { ISession, IFilm } from "../../interfaces/ISession";
+import { ISession } from "../../interfaces/ISession";
 import { useVotingLogic } from "../Voting/useVotingLogic";
 import VotingLayout from "../Voting/VotingLayout";
 import styles from "../Voting/Voting.module.scss";
