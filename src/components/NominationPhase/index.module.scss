@@ -136,11 +136,22 @@
       align-items: center;
       width: 83%;
       margin: 10px auto;
+      position: relative;
 
       .colorBar {
         margin-right: 20px;
         width: 80px;
         height: 24px;
+      }
+      
+      .deleteButton {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 0 8px;
+        font-size: 1.2rem;
+        margin-left: auto;
       }
     }
   }
