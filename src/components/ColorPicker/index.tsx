@@ -40,13 +40,13 @@ function ColorPicker({ session }: { session: ISession }) {
   const { sessionId } = useParams();
   const { userData, setUserData } = useUser();
   const [allHere, setAllHere] = useState<boolean>(false);
-  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [selectedStrategy, setSelectedStrategy] = useState<
     "elimination" | "ranked_choice" | "simple_vote"
   >(session.voting_strategy);
   const [allowedNoms, setAllowedNoms] = useState<number>(
     session.allowed_noms || 1,
   );
+  const isAdmin = userData.color === session.admin_color;
 
   useEffect(() => {
     if (session) {
@@ -59,11 +59,20 @@ function ColorPicker({ session }: { session: ISession }) {
       return;
     }
 
+    // If this is the first user, they become the admin
+    const isFirstUser = session.users.length === 0;
+    const updates: Partial<ISession> = {
+      users: [...session.users, { color, ready: false, votes: {} }],
+    };
+
+    // Set this user as admin if they're the first one
+    if (isFirstUser) {
+      updates.admin_color = color;
+    }
+
     const { error: updateError } = await supabase
       .from("sessions")
-      .update({
-        users: [...session.users, { color, ready: false, votes: {} }],
-      })
+      .update(updates)
       .eq("id", sessionId);
     if (updateError) {
       console.error("Error updating user color", updateError);
@@ -73,6 +82,9 @@ function ColorPicker({ session }: { session: ISession }) {
   };
 
   const handleAllHere = async () => {
+    // Only the admin can advance to nomination stage
+    if (!isAdmin) return;
+
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
@@ -87,6 +99,9 @@ function ColorPicker({ session }: { session: ISession }) {
   };
 
   const handleSaveSettings = async () => {
+    // Only the admin can change settings
+    if (!isAdmin) return;
+
     const { error: updateError } = await supabase
       .from("sessions")
       .update({
@@ -99,13 +114,6 @@ function ColorPicker({ session }: { session: ISession }) {
       console.error("Error updating settings", updateError);
       return;
     }
-    setShowSettings(false);
-  };
-
-  const handleCloseSettings = () => {
-    setSelectedStrategy(session.voting_strategy);
-    setAllowedNoms(session.allowed_noms || 1);
-    setShowSettings(false);
   };
 
   return (
@@ -153,71 +161,75 @@ function ColorPicker({ session }: { session: ISession }) {
             <div className={styles.waitingContent}>
               <h2 className={styles.title}>waiting room</h2>
               <div className={styles.joinedText}>{`${takenColors.length} ${takenColors.length === 1 ? 'person (you) has joined' : 'people have joined'}`}</div>
-            </div>
-            
-            <div className={styles.bottomContent}>
-              {!showSettings ? (
-                <div className={styles.buttonGroup}>
-                  <button className={styles.button} onClick={() => handleAllHere()}>
-                    we're all here
-                  </button>
-                  <button className={styles.button + ' ' + styles.settingsButton} onClick={() => setShowSettings(true)}>
-                    settings
-                  </button>
+              {session.admin_color && (
+                <div className={styles.adminText}>
+                  {isAdmin
+                    ? "you are the admin"
+                    : ``}
                 </div>
-              ) : (
-                <div className={styles.settingsContainer}>
-                  <div className={styles.settingRow}>
-                    <div>voting strategy:</div>
-                    <div className={styles.inputWrapper}>
-                      <select
-                        className={styles.select}
-                        value={selectedStrategy}
-                        onChange={(e) =>
-                          setSelectedStrategy(
-                            e.target.value as
-                            | "elimination"
-                            | "ranked_choice"
-                            | "simple_vote",
-                          )
-                        }
+              )}
+            </div>
+
+            <div className={styles.bottomContent}>
+              {isAdmin ? (
+                <>
+                  <div className={styles.settingsContainer}>
+                    <div className={styles.settingRow}>
+                      <div>voting strategy:</div>
+                      <div className={styles.inputWrapper}>
+                        <select
+                          className={styles.select}
+                          value={selectedStrategy}
+                          onChange={(e) =>
+                            setSelectedStrategy(
+                              e.target.value as
+                              | "elimination"
+                              | "ranked_choice"
+                              | "simple_vote",
+                            )
+                          }
+                        >
+                          <option disabled={true} value="ranked_choice">ranked choice - not yet implemented</option>
+                          <option value="elimination">elimination</option>
+                          <option value="simple_vote">simple vote</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className={styles.settingRow}>
+                      <div>nominations per person:</div>
+                      <div className={styles.inputWrapper}>
+                        <input
+                          className={styles.input}
+                          type="number"
+                          min="1"
+                          value={allowedNoms}
+                          onChange={(e) =>
+                            setAllowedNoms(Math.max(1, parseInt(e.target.value)))
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className={styles.buttonGroup}>
+                      <button
+                        className={styles.button}
+                        onClick={() => handleSaveSettings()}
                       >
-                        <option disabled={true} value="ranked_choice">ranked choice - not yet implemented</option>
-                        <option value="elimination">elimination</option>
-                        <option value="simple_vote">simple vote</option>
-                      </select>
+                        save settings
+                      </button>
+                      <button
+                        className={`${styles.button} ${styles.primary}`}
+                        onClick={() => handleAllHere()}
+                      >
+                        we're all here
+                      </button>
                     </div>
                   </div>
-
-                  <div className={styles.settingRow}>
-                    <div>nominations per person:</div>
-                    <div className={styles.inputWrapper}>
-                      <input
-                        className={styles.input}
-                        type="number"
-                        min="1"
-                        value={allowedNoms}
-                        onChange={(e) =>
-                          setAllowedNoms(Math.max(1, parseInt(e.target.value)))
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.buttonGroup}>
-                    <button
-                      className={styles.button}
-                      onClick={() => handleSaveSettings()}
-                    >
-                      save settings
-                    </button>
-                    <button
-                      className={styles.button + ' ' + styles.settingsButton}
-                      onClick={() => handleCloseSettings()}
-                    >
-                      go back
-                    </button>
-                  </div>
+                </>
+              ) : (
+                <div className={styles.nonAdminMessage}>
+                  waiting for the admin to start the session...
                 </div>
               )}
             </div>
