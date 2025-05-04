@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
-import { ISession } from "../../interfaces/ISession";
+import { ISession, IFilm } from "../../interfaces/ISession";
 import supabase from "../../supabaseClient";
 import styles from './index.module.scss';
 import { UserColorBar } from "../UserColorBar/index";
@@ -17,7 +17,7 @@ function NominationPhase({ session }: { session: ISession }) {
     const remainingNoms = getRemainingNoms();
     if (remainingNoms <= 0) {
       alert("You've reached your nomination limit!");
-      return;
+      return false;
     }
 
     const duplicateFilm = session.films.find(film =>
@@ -30,7 +30,7 @@ function NominationPhase({ session }: { session: ISession }) {
       } else {
         alert("someone else already nominated this lol");
       }
-      return;
+      return false;
     }
 
     const newFilm = {
@@ -39,31 +39,69 @@ function NominationPhase({ session }: { session: ISession }) {
       eliminated: false,
     };
 
-    await supabase
+    // Get the current session to ensure we have latest data
+    const { data: currentSession, error: getError } = await supabase
+      .from("sessions")
+      .select("films")
+      .eq("id", sessionId)
+      .single();
+      
+    if (getError) {
+      console.error("Error getting current session:", getError);
+      alert("Failed to get current session");
+      return false;
+    }
+    
+    // Use array concatenation to atomically add the new film
+    const { error } = await supabase
       .from("sessions")
       .update({
-        films: [...session.films, newFilm],
+        films: [...currentSession.films, newFilm]
       })
       .eq("id", sessionId);
+    
+    if (error) {
+      console.error("Error adding nomination:", error);
+      alert("Failed to add nomination");
+      return false;
+    }
+    
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newFilm.trim()) {
-      nominateFilm(newFilm.trim());
-      setNewFilm("");
+      const success = await nominateFilm(newFilm.trim());
+      if (success) {
+        setNewFilm("");
+      }
     }
   };
 
   const deleteNomination = async (titleToDelete: string) => {
-    const updatedFilms = session.films.filter(
-      (film) => film.title !== titleToDelete,
+    // Get the current session to ensure we have latest data
+    const { data: currentSession, error: getError } = await supabase
+      .from("sessions")
+      .select("films")
+      .eq("id", sessionId)
+      .single();
+      
+    if (getError) {
+      console.error("Error getting current session:", getError);
+      alert("Failed to get current session");
+      return;
+    }
+    
+    // Filter out the film to delete from the most current data
+    const updatedFilms = currentSession.films.filter(
+      (film: IFilm) => film.title !== titleToDelete
     );
-
+    
     const { error } = await supabase
       .from("sessions")
       .update({
-        films: updatedFilms,
+        films: updatedFilms
       })
       .eq("id", sessionId);
 
