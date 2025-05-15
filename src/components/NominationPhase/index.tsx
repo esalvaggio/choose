@@ -39,33 +39,17 @@ function NominationPhase({ session }: { session: ISession }) {
       eliminated: false,
     };
 
-    // Get the current session to ensure we have latest data
-    const { data: currentSession, error: getError } = await supabase
-      .from("sessions")
-      .select("films")
-      .eq("id", sessionId)
-      .single();
-      
-    if (getError) {
-      console.error("Error getting current session:", getError);
-      alert("Failed to get current session");
-      return false;
-    }
-    
-    // Use array concatenation to atomically add the new film
-    const { error } = await supabase
-      .from("sessions")
-      .update({
-        films: [...currentSession.films, newFilm]
-      })
-      .eq("id", sessionId);
-    
+    const { error } = await supabase.rpc('append_film_to_session', {
+      p_session_id: sessionId,
+      p_film: newFilm
+    });
+
     if (error) {
       console.error("Error adding nomination:", error);
       alert("Failed to add nomination");
       return false;
     }
-    
+
     return true;
   };
 
@@ -79,31 +63,11 @@ function NominationPhase({ session }: { session: ISession }) {
     }
   };
 
-  const deleteNomination = async (titleToDelete: string) => {
-    // Get the current session to ensure we have latest data
-    const { data: currentSession, error: getError } = await supabase
-      .from("sessions")
-      .select("films")
-      .eq("id", sessionId)
-      .single();
-      
-    if (getError) {
-      console.error("Error getting current session:", getError);
-      alert("Failed to get current session");
-      return;
-    }
-    
-    // Filter out the film to delete from the most current data
-    const updatedFilms = currentSession.films.filter(
-      (film: IFilm) => film.title !== titleToDelete
-    );
-    
-    const { error } = await supabase
-      .from("sessions")
-      .update({
-        films: updatedFilms
-      })
-      .eq("id", sessionId);
+  const deleteNomination = async (filmToDelete: IFilm) => {
+    const { error } = await supabase.rpc('remove_film_from_session', {
+      p_session_id: sessionId,
+      p_film: filmToDelete
+    });
 
     if (error) {
       console.error("Error deleting nomination:", error);
@@ -210,7 +174,7 @@ function NominationPhase({ session }: { session: ISession }) {
               .map((film) => (
                 <li key={`${film.nominated_by}-${film.title}`}>
                   {film.title}
-                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film)}>×</button>
                 </li>
               ))}
           </ul>
@@ -244,7 +208,7 @@ function NominationPhase({ session }: { session: ISession }) {
                   {film.title}
                 </span>
                 {isAdmin && allUsersReady && (
-                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film)}>×</button>
                 )}
               </li>
             ))}
