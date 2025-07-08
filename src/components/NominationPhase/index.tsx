@@ -90,15 +90,12 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleDone = async () => {
-    // No longer require users to nominate films themselves
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        users: session.users.map((user) =>
-          user.color === userData.color ? { ...user, ready: true } : user,
-        ),
-      })
-      .eq("id", sessionId);
+    const { error: updateError } = await supabase.rpc('set_user_ready_status', {
+      p_session_id: sessionId,
+      p_user_color: userData.color,
+      p_is_ready: true
+    });
+    
     if (updateError) {
       console.error("Error updating user ready status", updateError);
       return;
