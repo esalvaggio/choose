@@ -76,7 +76,6 @@ function ColorPicker({ session }: { session: ISession }) {
       return;
     }
 
-    // Use RPC function to atomically join the session
     const { data: success, error: updateError } = await supabase.rpc('join_session', {
       p_session_id: sessionId,
       p_user_color: color

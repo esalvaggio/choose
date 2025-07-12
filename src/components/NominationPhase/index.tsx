@@ -109,7 +109,6 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
 
-    // Use RPC function to atomically start voting with latest films
     const { error: updateError } = await supabase.rpc('initiate_voting', {
       p_session_id: sessionId
     });

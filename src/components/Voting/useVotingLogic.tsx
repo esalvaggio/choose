@@ -270,27 +270,15 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
     setIsLoading(true);
     setShowTieOptions(false);
     
-    // For ranked choice, we handle rankings differently
-    const patch = strategy === 'ranked_choice' 
-      ? {
-          users: session.users.map((user) =>
-            user.color === userData.color
-              ? { ...user, votes: JSON.parse(chosenFilm), ready: true } // chosenFilm contains JSON rankings
-              : user
-          ),
-        }
-      : {
-          users: session.users.map((user) =>
-            user.color === userData.color
-              ? { ...user, votes: { ...user.votes, [chosenFilm]: 1 }, ready: true }
-              : user
-          ),
-        };
+    const voteData = strategy === 'ranked_choice' 
+      ? JSON.parse(chosenFilm) // chosenFilm contains JSON rankings
+      : { [chosenFilm]: 1 }; // Simple vote for the chosen film
     
-    const { error } = await supabase
-      .from('sessions')
-      .update(patch)
-      .eq('id', sessionId);
+    const { error } = await supabase.rpc('cast_vote', {
+      p_session_id: sessionId,
+      p_user_color: userData.color,
+      p_vote_data: voteData
+    });
 
     if (error) console.error('Error casting vote', error);
     setIsLoading(false);
