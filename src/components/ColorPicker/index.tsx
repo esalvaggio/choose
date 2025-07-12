@@ -76,25 +76,22 @@ function ColorPicker({ session }: { session: ISession }) {
       return;
     }
 
-    // If this is the first user, they become the admin
-    const isFirstUser = session.users.length === 0;
-    const updates: Partial<ISession> = {
-      users: [...session.users, { color, ready: false, votes: {} }],
-    };
-
-    // Set this user as admin if they're the first one
-    if (isFirstUser) {
-      updates.admin_color = color;
-    }
-
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update(updates)
-      .eq("id", sessionId);
+    const { data: success, error: updateError } = await supabase.rpc('join_session', {
+      p_session_id: sessionId,
+      p_user_color: color
+    });
+    
     if (updateError) {
-      console.error("Error updating user color", updateError);
+      console.error("Error joining session", updateError);
       return;
     }
+    
+    // Check if the color was successfully claimed
+    if (!success) {
+      alert("sorry that color was just taken by someone else !");
+      return;
+    }
+    
     setUserData(color, sessionId!);
   };
 

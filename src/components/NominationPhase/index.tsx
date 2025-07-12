@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
-import { ISession } from "../../interfaces/ISession";
+import { ISession, IFilm } from "../../interfaces/ISession";
 import supabase from "../../supabaseClient";
 import styles from './index.module.scss';
 import { UserColorBar } from "../UserColorBar/index";
@@ -17,7 +17,7 @@ function NominationPhase({ session }: { session: ISession }) {
     const remainingNoms = getRemainingNoms();
     if (remainingNoms <= 0) {
       alert("You've reached your nomination limit!");
-      return;
+      return false;
     }
 
     const duplicateFilm = session.films.find(film =>
@@ -30,7 +30,7 @@ function NominationPhase({ session }: { session: ISession }) {
       } else {
         alert("someone else already nominated this lol");
       }
-      return;
+      return false;
     }
 
     const newFilm = {
@@ -39,33 +39,35 @@ function NominationPhase({ session }: { session: ISession }) {
       eliminated: false,
     };
 
-    await supabase
-      .from("sessions")
-      .update({
-        films: [...session.films, newFilm],
-      })
-      .eq("id", sessionId);
+    const { error } = await supabase.rpc('append_film_to_session', {
+      p_session_id: sessionId,
+      p_film: newFilm
+    });
+
+    if (error) {
+      console.error("Error adding nomination:", error);
+      alert("Failed to add nomination");
+      return false;
+    }
+
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newFilm.trim()) {
-      nominateFilm(newFilm.trim());
-      setNewFilm("");
+      const success = await nominateFilm(newFilm.trim());
+      if (success) {
+        setNewFilm("");
+      }
     }
   };
 
-  const deleteNomination = async (titleToDelete: string) => {
-    const updatedFilms = session.films.filter(
-      (film) => film.title !== titleToDelete,
-    );
-
-    const { error } = await supabase
-      .from("sessions")
-      .update({
-        films: updatedFilms,
-      })
-      .eq("id", sessionId);
+  const deleteNomination = async (filmToDelete: IFilm) => {
+    const { error } = await supabase.rpc('remove_film_from_session', {
+      p_session_id: sessionId,
+      p_film: filmToDelete
+    });
 
     if (error) {
       console.error("Error deleting nomination:", error);
@@ -88,15 +90,12 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleDone = async () => {
-    // No longer require users to nominate films themselves
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        users: session.users.map((user) =>
-          user.color === userData.color ? { ...user, ready: true } : user,
-        ),
-      })
-      .eq("id", sessionId);
+    const { error: updateError } = await supabase.rpc('set_user_ready_status', {
+      p_session_id: sessionId,
+      p_user_color: userData.color,
+      p_is_ready: true
+    });
+    
     if (updateError) {
       console.error("Error updating user ready status", updateError);
       return;
@@ -110,13 +109,10 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
 
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        stage: "vote",
-        current_round_films: session.films, // Ensure films are set for voting
-      })
-      .eq("id", sessionId);
+    const { error: updateError } = await supabase.rpc('initiate_voting', {
+      p_session_id: sessionId
+    });
+    
     if (updateError) {
       console.error("Error updating session stage", updateError);
       return;
@@ -125,12 +121,10 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleReturnToNominations = async () => {
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        users: session.users.map(user => ({ ...user, ready: false })),
-      })
-      .eq("id", sessionId);
+    const { error: updateError } = await supabase.rpc('reset_all_users_ready', {
+      p_session_id: sessionId
+    });
+    
     if (updateError) {
       console.error("Error resetting nomination phase", updateError);
       return;
@@ -172,7 +166,7 @@ function NominationPhase({ session }: { session: ISession }) {
               .map((film) => (
                 <li key={`${film.nominated_by}-${film.title}`}>
                   {film.title}
-                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film)}>×</button>
                 </li>
               ))}
           </ul>
@@ -206,7 +200,7 @@ function NominationPhase({ session }: { session: ISession }) {
                   {film.title}
                 </span>
                 {isAdmin && allUsersReady && (
-                  <button className={styles.deleteButton} onClick={() => deleteNomination(film.title)}>×</button>
+                  <button className={styles.deleteButton} onClick={() => deleteNomination(film)}>×</button>
                 )}
               </li>
             ))}
