@@ -89,7 +89,7 @@ function ColorPicker({ session }: { session: ISession }) {
     
     // Check if the color was successfully claimed
     if (!success) {
-      alert("Sorry, that color was just taken by someone else!");
+      alert("sorry that color was just taken by someone else !");
       return;
     }
     

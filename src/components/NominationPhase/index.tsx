@@ -124,12 +124,10 @@ function NominationPhase({ session }: { session: ISession }) {
   };
 
   const handleReturnToNominations = async () => {
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        users: session.users.map(user => ({ ...user, ready: false })),
-      })
-      .eq("id", sessionId);
+    const { error: updateError } = await supabase.rpc('reset_all_users_ready', {
+      p_session_id: sessionId
+    });
+    
     if (updateError) {
       console.error("Error resetting nomination phase", updateError);
       return;
