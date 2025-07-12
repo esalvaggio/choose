@@ -23,45 +23,16 @@ export default function Session() {
 
   useEffect(() => {
     const fetchSession = async () => {
-      const { data: existingSession, error } = await supabase
-        .from("sessions")
-        .select("*")
-        .eq("id", sessionId)
-        .single();
+      const { data: session, error } = await supabase.rpc('get_or_create_session', {
+        p_session_id: sessionId
+      });
 
       if (error) {
-        console.error("Failed to pull session details from supabase", error);
+        console.error("Failed to get or create session:", error);
+        return;
       }
-
-      if (!existingSession && sessionId) {
-        const newSession: ISession = {
-          id: sessionId,
-          films: [],
-          voting_strategy: "simple_vote",
-          stage: "color",
-          users: [],
-          round: 1,
-          current_round_films: [],
-          winners: [],
-          allow_multiple_winners: false,
-          allowed_noms: 1,
-        };
-        const { data: createdSession, error } = await supabase
-          .from("sessions")
-          .insert(newSession)
-          .select()
-          .single();
-
-        if (error) {
-          console.error("Failed to create session:", error);
-          return;
-        }
-        if (createdSession) {
-          setSession(newSession);
-        }
-      } else {
-        setSession(existingSession);
-      }
+      
+      setSession(session);
     };
     const channel = supabase
       .channel(`session-${sessionId}`)
