@@ -109,13 +109,11 @@ function NominationPhase({ session }: { session: ISession }) {
       return;
     }
 
-    const { error: updateError } = await supabase
-      .from("sessions")
-      .update({
-        stage: "vote",
-        current_round_films: session.films, // Ensure films are set for voting
-      })
-      .eq("id", sessionId);
+    // Use RPC function to atomically start voting with latest films
+    const { error: updateError } = await supabase.rpc('initiate_voting', {
+      p_session_id: sessionId
+    });
+    
     if (updateError) {
       console.error("Error updating session stage", updateError);
       return;
