@@ -127,6 +127,7 @@ export default function Lobby() {
         <button
           className={`${styles.button} ${styles.primary}`}
           onClick={createNewSession}
+          disabled={true}
         >
           start new session
         </button>
@@ -137,10 +138,10 @@ export default function Lobby() {
             placeholder={"enter session code..."}
             value={gameId}
             onChange={(e) => setGameId(e.target.value)}
-            disabled={isJoiningSession}
+            disabled={true}
           />
-          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={isJoiningSession || !gameId}>
-            {isJoiningSession ? "joining..." : "start with code"}
+          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={true}>
+            start with code
           </button>
         </form>
       </div>
