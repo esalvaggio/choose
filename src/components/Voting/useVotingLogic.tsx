@@ -325,35 +325,41 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
     if (isLoading) return;
     setIsLoading(true);
     setShowTieOptions(false);
-    
-    // Check for full-tie
-    if (toEliminate.length === filmsInRound.length) {
-      setTiedFilms(toEliminate);
-      setShowTieOptions(true);
+
+    const { data, error } = await supabase.rpc('process_elimination_round', {
+      p_session_id: sessionId
+    });
+
+    if (error) {
+      console.error('Error processing elimination round', error);
       setIsLoading(false);
       return;
     }
 
-    // Update local state immediately
-    setFilmsInRound(nextRoundFilms);
-    
-    // If there's only one film left, finalize
-    if (nextRoundFilms.length === 1) {
-      await acceptSingleWinner(nextRoundFilms);
+    if (!data.success) {
+      console.error('Elimination failed:', data.error);
+      setIsLoading(false);
       return;
     }
 
-    // Otherwise, update for next round
-    const { error } = await supabase
-      .from('sessions')
-      .update({
-        round: session.round + 1,
-        current_round_films: nextRoundFilms,
-        users: session.users.map((u) => ({ ...u, votes: {}, ready: false })),
-      })
-      .eq('id', sessionId);
+    // Handle the three possible outcomes from the RPC
+    switch (data.status) {
+      case 'tie':
+        // All films had same votes - show tie options
+        setTiedFilms(data.tied_films as IFilm[]);
+        setShowTieOptions(true);
+        break;
+      case 'winner':
+        // Single winner found - real-time subscription will update UI
+        setSendToResults(true);
+        break;
+      case 'next_round':
+        // Advanced to next round - real-time subscription will update UI
+        // Update local state immediately for responsiveness
+        setFilmsInRound(data.remaining as IFilm[]);
+        break;
+    }
 
-    if (error) console.error('Error advancing to next round', error);
     setChosenFilm('');
     setIsLoading(false);
   };
