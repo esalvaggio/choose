@@ -31,6 +31,8 @@ function EliminationVoting({ session }: { session: ISession }) {
     strategy: 'elimination'
   });
 
+  const isAdmin = userData.color === session.admin_color;
+
   if (sendToResults) {
     return null;
   }
@@ -57,38 +59,50 @@ function EliminationVoting({ session }: { session: ISession }) {
 
   // Bottom action content for after voting
   const bottomActionContent = showTieOptions ? (
-    <>
+    isAdmin ? (
+      <>
+        <button
+          className={styles.button}
+          onClick={startTiebreakerRound}
+          disabled={isLoading}
+        >
+          start tie-breaker round
+        </button>
+        <button
+          className={`${styles.button} ${styles.dark}`}
+          onClick={acceptMultipleWinners}
+          disabled={isLoading}
+        >
+          accept multiple winners
+        </button>
+      </>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to decide what to do next...</div>
+    )
+  ) : nextRoundFilms.length > 1 ? (
+    isAdmin ? (
       <button
         className={styles.button}
-        onClick={startTiebreakerRound}
+        onClick={handleElimination}
         disabled={isLoading}
       >
-        start tie-breaker round
+        {isLoading ? "processing..." : "next round"}
       </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to start next round...</div>
+    )
+  ) : (
+    isAdmin ? (
       <button
         className={`${styles.button} ${styles.dark}`}
-        onClick={acceptMultipleWinners}
+        onClick={() => acceptSingleWinner()}
         disabled={isLoading}
       >
-        accept multiple winners
+        {isLoading ? "processing..." : "see results"}
       </button>
-    </>
-  ) : nextRoundFilms.length > 1 ? (
-    <button
-      className={styles.button}
-      onClick={handleElimination}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "next round"}
-    </button>
-  ) : (
-    <button
-      className={`${styles.button} ${styles.dark}`}
-      onClick={() => acceptSingleWinner()}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "see results"}
-    </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to show results...</div>
+    )
   );
 
   return (
