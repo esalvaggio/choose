@@ -223,3 +223,81 @@
   max-width: 360px;
   position: relative;
 }
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background-color: shared.$background-dark;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  max-width: 360px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: normal;
+  text-align: center;
+  margin: 0;
+  color: shared.$text-color;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.confirmRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.confirmLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.confirmValue {
+  font-size: 1.1rem;
+  color: shared.$text-color;
+}
+
+.modalButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+
+  .button {
+    width: 100%;
+    margin: 0;
+  }
+
+  .cancelButton {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: shared.$text-color;
+    border-color: rgba(255, 255, 255, 0.3);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+  }
+}

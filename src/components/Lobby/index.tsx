@@ -153,7 +153,7 @@ export default function Lobby() {
             onChange={(e) => setGameId(e.target.value)}
             disabled={isDisabled}
           />
-          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={isDisabled}>
+          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={isDisabled || !gameId}>
             start with code
           </button>
         </form>

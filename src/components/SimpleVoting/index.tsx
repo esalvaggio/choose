@@ -29,6 +29,8 @@ function SimpleVoting({ session }: { session: ISession }) {
     strategy: 'simple_vote'
   });
 
+  const isAdmin = userData.color === session.admin_color;
+
   if (sendToResults) {
     return null;
   }
@@ -52,30 +54,38 @@ function SimpleVoting({ session }: { session: ISession }) {
 
   // Bottom action content for after voting
   const bottomActionContent = showTieOptions ? (
-    <>
-      <button
-        className={`${styles.button}`}
-        onClick={startTiebreakerRound}
-        disabled={isLoading}
-      >
-        start tie-breaker round
-      </button>
+    isAdmin ? (
+      <>
+        <button
+          className={`${styles.button}`}
+          onClick={startTiebreakerRound}
+          disabled={isLoading}
+        >
+          start tie-breaker round
+        </button>
+        <button
+          className={`${styles.button} ${styles.dark}`}
+          onClick={acceptMultipleWinners}
+          disabled={isLoading}
+        >
+          accept multiple winners
+        </button>
+      </>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to decide what to do next...</div>
+    )
+  ) : (
+    isAdmin ? (
       <button
         className={`${styles.button} ${styles.dark}`}
-        onClick={acceptMultipleWinners}
+        onClick={handleSendToResults}
         disabled={isLoading}
       >
-        accept multiple winners
+        {isLoading ? "processing..." : "see results!"}
       </button>
-    </>
-  ) : (
-    <button
-      className={`${styles.button} ${styles.dark}`}
-      onClick={handleSendToResults}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "see results!"}
-    </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to show results...</div>
+    )
   );
 
   return (

@@ -48,6 +48,20 @@ function ColorPicker({ session }: { session: ISession }) {
   );
   const isAdmin = userData.color === session.admin_color;
   const [isSaving, setIsSaving] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const getStrategyDisplayName = (strategy: string) => {
+    switch (strategy) {
+      case "elimination":
+        return "elimination";
+      case "ranked_choice":
+        return "ranked choice";
+      case "simple_vote":
+        return "simple vote";
+      default:
+        return strategy;
+    }
+  };
 
   useEffect(() => {
     if (session) {
@@ -239,13 +253,48 @@ function ColorPicker({ session }: { session: ISession }) {
                     <div className={styles.buttonGroup}>
                       <button
                         className={styles.button}
-                        onClick={() => handleAllHere()}
+                        onClick={() => setShowConfirmModal(true)}
                         disabled={isSaving}
                       >
                         we're all here
                       </button>
                     </div>
                   </div>
+
+                  {showConfirmModal && (
+                    <div className={styles.modalOverlay} onClick={() => setShowConfirmModal(false)}>
+                      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <h3 className={styles.modalTitle}>confirm settings</h3>
+                        <div className={styles.modalContent}>
+                          <div className={styles.confirmRow}>
+                            <span className={styles.confirmLabel}>voting strategy:</span>
+                            <span className={styles.confirmValue}>{getStrategyDisplayName(selectedStrategy)}</span>
+                          </div>
+                          <div className={styles.confirmRow}>
+                            <span className={styles.confirmLabel}>nominations per person:</span>
+                            <span className={styles.confirmValue}>{allowedNoms}</span>
+                          </div>
+                        </div>
+                        <div className={styles.modalButtons}>
+                          <button
+                            className={`${styles.button} ${styles.cancelButton}`}
+                            onClick={() => setShowConfirmModal(false)}
+                          >
+                            go back
+                          </button>
+                          <button
+                            className={styles.button}
+                            onClick={() => {
+                              setShowConfirmModal(false);
+                              handleAllHere();
+                            }}
+                          >
+                            confirm
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className={styles.nonAdminMessage}>
