@@ -1,4 +1,5 @@
 @use '../../styles/shared.scss' as shared;
+@use 'sass:color';
 
 .mainContainer {
     display: flex;
@@ -83,5 +84,47 @@
 
     .title {
         margin: 1.3125rem 0;
+    }
+}
+
+.warningBanner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    margin: 1rem;
+    background-color: rgba(200, 200, 0, 0.15);
+    border: 2px dashed shared.$yellow;
+    max-width: 360px;
+    width: 90%;
+    box-sizing: border-box;
+
+    .warningIcon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .warningTitle {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: shared.$yellow;
+        margin-bottom: 0.5rem;
+    }
+
+    .warningText {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .contactLink {
+        color: shared.$yellow;
+        text-decoration: underline;
+        cursor: pointer;
+        
+        &:hover {
+            color: color.adjust(shared.$yellow, $lightness: 10%);
+        }
     }
 }

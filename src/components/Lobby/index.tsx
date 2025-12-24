@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 import supabase from "../../supabaseClient";
+import { useSupabaseStatus } from "../../contexts/SupabaseStatusContext";
 
 export default function Lobby() {
   const navigate = useNavigate();
+  const { isDbAvailable, isChecking } = useSupabaseStatus();
   const [gameId, setGameId] = useState("");
-  const [isJoiningSession, setIsJoiningSession] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [wordList, setWordList] = useState<string[]>([]);
   const [validatedSessionId, setValidatedSessionId] = useState<string | null>(null);
+
+  // Disable interactions when DB is unavailable or still checking
+  const isDisabled = !isDbAvailable || isChecking;
 
   // load word list
   useEffect(() => {
@@ -73,7 +77,6 @@ export default function Lobby() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (gameId) {
-      setIsJoiningSession(true);
       navigate(gameId);
     }
   };
@@ -123,11 +126,22 @@ export default function Lobby() {
         <span className={styles.title}>choose</span>
       </div>
 
+      {!isDbAvailable && !isChecking && (
+        <div className={styles.warningBanner}>
+          <span className={styles.warningIcon}>🚧</span>
+          <span className={styles.warningTitle}>oops, we're napping!</span>
+          <span className={styles.warningText}>
+            supabase put the database to sleep because nobody's used this app in over 30 days. 
+            ping elliot to wake it up and get back to choosing! ✨
+          </span>
+        </div>
+      )}
+
       <div className={styles.bottomSection}>
         <button
           className={`${styles.button} ${styles.primary}`}
           onClick={createNewSession}
-          disabled={true}
+          disabled={isDisabled}
         >
           start new session
         </button>
@@ -138,9 +152,9 @@ export default function Lobby() {
             placeholder={"enter session code..."}
             value={gameId}
             onChange={(e) => setGameId(e.target.value)}
-            disabled={true}
+            disabled={isDisabled}
           />
-          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={true}>
+          <button className={`${styles.button} ${styles.dark}`} type="submit" disabled={isDisabled}>
             start with code
           </button>
         </form>
