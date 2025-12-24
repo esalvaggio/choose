@@ -304,18 +304,39 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
 
   // For SimpleVoting: send to results
   const handleSendToResults = async () => {
+    if (isLoading) return;
     setIsLoading(true);
-    
-    const { error } = await supabase
-      .from('sessions')
-      .update({
-        stage: 'result',
-        winners: winningFilms,
-        allow_multiple_winners: winningFilms.length > 1
-      })
-      .eq('id', sessionId);
 
-    if (error) console.error('Error updating session stage', error);
+    const { data, error } = await supabase.rpc('process_simple_vote_round', {
+      p_session_id: sessionId
+    });
+
+    if (error) {
+      console.error('Error processing simple vote round', error);
+      setIsLoading(false);
+      return;
+    }
+
+    if (!data) {
+      console.error('Simple vote returned no data');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!data.success) {
+      console.error('Simple vote failed:', data.error);
+      // Surface error to user if needed (e.g., "No votes have been cast")
+      alert(data.error || 'Failed to process votes');
+      setIsLoading(false);
+      return;
+    }
+
+    // Success - real-time subscription will update UI with results
+    // Optionally handle tie case if needed for UI feedback
+    if (data.is_tie) {
+      console.log('Simple vote resulted in a tie:', data.winners);
+    }
+
     setSendToResults(true);
     setIsLoading(false);
   };
