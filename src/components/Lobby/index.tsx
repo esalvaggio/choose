@@ -128,11 +128,10 @@ export default function Lobby() {
 
       {!isDbAvailable && !isChecking && (
         <div className={styles.warningBanner}>
-          <span className={styles.warningIcon}>🚧</span>
           <span className={styles.warningTitle}>oops, we're napping!</span>
           <span className={styles.warningText}>
             supabase put the database to sleep because nobody's used this app in over 30 days. 
-            ping elliot to wake it up and get back to choosing! ✨
+            ping elliot to wake it up and get back to choosing!
           </span>
         </div>
       )}
