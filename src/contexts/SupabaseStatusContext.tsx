@@ -22,7 +22,7 @@ interface SupabaseStatusProviderProps {
 }
 
 // Set to true to test the "database paused" warning UI
-const FORCE_DB_UNAVAILABLE = true;
+const FORCE_DB_UNAVAILABLE = false;
 
 export function SupabaseStatusProvider({ children }: SupabaseStatusProviderProps) {
   const [isDbAvailable, setIsDbAvailable] = useState(true);
