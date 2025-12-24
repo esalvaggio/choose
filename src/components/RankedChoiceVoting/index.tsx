@@ -28,6 +28,8 @@ function RankedChoiceVoting({ session }: { session: ISession }) {
     strategy: 'ranked_choice'
   });
 
+  const isAdmin = userData.color === session.admin_color;
+
   // Handle reordering
   const handleMoveFilm = (filmTitle: string, direction: 'up' | 'down') => {
     if (!rankings || currUserVoted) return;
@@ -63,20 +65,24 @@ function RankedChoiceVoting({ session }: { session: ISession }) {
               </div>
             ))}
           </div>
-          <div className={styles.tieButtons}>
-            <button 
-              onClick={startTiebreakerRound}
-              className={styles.button}
-            >
-              Start Tiebreaker Round
-            </button>
-            <button 
-              onClick={acceptMultipleWinners}
-              className={styles.button}
-            >
-              Accept All as Winners
-            </button>
-          </div>
+          {isAdmin ? (
+            <div className={styles.tieButtons}>
+              <button 
+                onClick={startTiebreakerRound}
+                className={styles.button}
+              >
+                Start Tiebreaker Round
+              </button>
+              <button 
+                onClick={acceptMultipleWinners}
+                className={styles.button}
+              >
+                Accept All as Winners
+              </button>
+            </div>
+          ) : (
+            <div className={styles.adminWaitingMessage}>waiting for admin to decide what to do next...</div>
+          )}
         </div>
       </div>
     );

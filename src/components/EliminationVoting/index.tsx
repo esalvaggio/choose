@@ -31,6 +31,8 @@ function EliminationVoting({ session }: { session: ISession }) {
     strategy: 'elimination'
   });
 
+  const isAdmin = userData.color === session.admin_color;
+
   if (sendToResults) {
     return null;
   }
@@ -57,22 +59,26 @@ function EliminationVoting({ session }: { session: ISession }) {
 
   // Bottom action content for after voting
   const bottomActionContent = showTieOptions ? (
-    <>
-      <button
-        className={styles.button}
-        onClick={startTiebreakerRound}
-        disabled={isLoading}
-      >
-        start tie-breaker round
-      </button>
-      <button
-        className={`${styles.button} ${styles.dark}`}
-        onClick={acceptMultipleWinners}
-        disabled={isLoading}
-      >
-        accept multiple winners
-      </button>
-    </>
+    isAdmin ? (
+      <>
+        <button
+          className={styles.button}
+          onClick={startTiebreakerRound}
+          disabled={isLoading}
+        >
+          start tie-breaker round
+        </button>
+        <button
+          className={`${styles.button} ${styles.dark}`}
+          onClick={acceptMultipleWinners}
+          disabled={isLoading}
+        >
+          accept multiple winners
+        </button>
+      </>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to decide what to do next...</div>
+    )
   ) : nextRoundFilms.length > 1 ? (
     <button
       className={styles.button}

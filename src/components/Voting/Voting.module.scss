@@ -174,4 +174,15 @@
 
 .bold {
   font-weight: bold;
+}
+
+.waitingMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  padding: 0 20px;
+  max-width: 100%;
+  box-sizing: border-box;
 } 
