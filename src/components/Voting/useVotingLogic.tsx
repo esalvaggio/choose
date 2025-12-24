@@ -274,7 +274,7 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
       ? JSON.parse(chosenFilm) // chosenFilm contains JSON rankings
       : { [chosenFilm]: 1 }; // Simple vote for the chosen film
     
-    const { error } = await supabase.rpc('cast_vote', {
+    const { error } = await supabase.rpc('cast_new_vote', {
       p_session_id: sessionId,
       p_user_color: userData.color,
       p_vote_data: voteData
