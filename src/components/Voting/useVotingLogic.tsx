@@ -336,6 +336,12 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
       return;
     }
 
+    if (!data) {
+      console.error('Elimination returned no data');
+      setIsLoading(false);
+      return;
+    }
+
     if (!data.success) {
       console.error('Elimination failed:', data.error);
       setIsLoading(false);
@@ -358,6 +364,10 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
         // Update local state immediately for responsiveness
         setFilmsInRound(data.remaining as IFilm[]);
         break;
+      default:
+        console.error('Unexpected elimination status:', data.status);
+        setIsLoading(false);
+        return;
     }
 
     setChosenFilm('');
