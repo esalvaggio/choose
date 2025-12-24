@@ -130,8 +130,8 @@ export default function Lobby() {
         <div className={styles.warningBanner}>
           <span className={styles.warningTitle}>oops, we're napping!</span>
           <span className={styles.warningText}>
-            supabase put the database to sleep because nobody's used this app in over 30 days. 
-            ping elliot to wake it up and get back to choosing!
+            supabase put the db to sleep because nobody's used this thing in over 30 days. 
+            ping Elliot to wake it up to get back to choosing!
           </span>
         </div>
       )}
