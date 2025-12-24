@@ -75,13 +75,17 @@ function SimpleVoting({ session }: { session: ISession }) {
       <div className={styles.waitingMessage}>waiting for admin to decide what to do next...</div>
     )
   ) : (
-    <button
-      className={`${styles.button} ${styles.dark}`}
-      onClick={handleSendToResults}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "see results!"}
-    </button>
+    isAdmin ? (
+      <button
+        className={`${styles.button} ${styles.dark}`}
+        onClick={handleSendToResults}
+        disabled={isLoading}
+      >
+        {isLoading ? "processing..." : "see results!"}
+      </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to show results...</div>
+    )
   );
 
   return (
