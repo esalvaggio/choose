@@ -21,6 +21,9 @@ interface SupabaseStatusProviderProps {
   children: ReactNode;
 }
 
+// Set to true to test the "database paused" warning UI
+const FORCE_DB_UNAVAILABLE = false;
+
 export function SupabaseStatusProvider({ children }: SupabaseStatusProviderProps) {
   const [isDbAvailable, setIsDbAvailable] = useState(true);
   const [isChecking, setIsChecking] = useState(true);
@@ -28,6 +31,14 @@ export function SupabaseStatusProvider({ children }: SupabaseStatusProviderProps
 
   useEffect(() => {
     const checkSupabaseStatus = async () => {
+      // For testing the warning UI
+      if (FORCE_DB_UNAVAILABLE) {
+        setIsDbAvailable(false);
+        setError('Database is currently paused (forced for testing)');
+        setIsChecking(false);
+        return;
+      }
+
       try {
         // Simple ping to check if Supabase is responding
         // We just need to make any lightweight query to see if the DB is up
