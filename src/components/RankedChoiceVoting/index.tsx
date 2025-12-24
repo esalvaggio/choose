@@ -165,12 +165,16 @@ function RankedChoiceVoting({ session }: { session: ISession }) {
           
           {allUsersVoted && isUserInSession && (
             <div className={styles.actionsContainer}>
-              <button
-                onClick={handleSendToResults}
-                className={styles.nextButton}
-              >
-                Complete Voting
-              </button>
+              {isAdmin ? (
+                <button
+                  onClick={handleSendToResults}
+                  className={styles.nextButton}
+                >
+                  Complete Voting
+                </button>
+              ) : (
+                <div className={styles.adminWaitingMessage}>waiting for admin to show results...</div>
+              )}
             </div>
           )}
           

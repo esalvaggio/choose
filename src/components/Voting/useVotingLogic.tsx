@@ -332,9 +332,12 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
     }
 
     // Success - real-time subscription will update UI with results
-    // Optionally handle tie case if needed for UI feedback
+    // Handle tie by surfacing tie options instead of jumping to results
     if (data.is_tie) {
-      console.log('Simple vote resulted in a tie:', data.winners);
+      setTiedFilms(data.winners as IFilm[]);
+      setShowTieOptions(true);
+      setIsLoading(false);
+      return;
     }
 
     setSendToResults(true);
@@ -398,21 +401,45 @@ export function useVotingLogic({ session, userData, strategy }: UseVotingLogicPr
   // Start a tiebreaker round
   const startTiebreakerRound = async () => {
     if (isLoading) return;
+    
+    // Early guard: don't proceed if no tied films
+    if (!tiedFilms.length) {
+      console.error('No tied films to start a tiebreaker');
+      return;
+    }
+    
     setIsLoading(true);
-    
-    // Update local state first
-    setFilmsInRound(tiedFilms);
-    
-    const { error } = await supabase
-      .from('sessions')
-      .update({
-        users: session.users.map(u => ({ ...u, votes: {}, ready: false })),
-        round: session.round + 1,
-        current_round_films: tiedFilms
-      })
-      .eq('id', sessionId);
-      
-    if (error) console.error('Error starting tie-breaker round', error);
+
+    // Extract film titles from tiedFilms to pass to RPC
+    const tiedFilmTitles = tiedFilms.map(film => film.title);
+
+    const { data, error } = await supabase.rpc('start_tiebreaker_round', {
+      p_session_id: sessionId,
+      p_tied_film_titles: tiedFilmTitles
+    });
+
+    if (error) {
+      console.error('Error starting tiebreaker round', error);
+      setIsLoading(false);
+      return;
+    }
+
+    if (!data) {
+      console.error('Tiebreaker returned no data');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!data.success) {
+      console.error('Tiebreaker failed:', data.error);
+      alert(data.error || 'Failed to start tiebreaker');
+      setIsLoading(false);
+      return;
+    }
+
+    // Success - update local state for responsiveness
+    // Real-time subscription will also update
+    setFilmsInRound(data.tiebreaker_films as IFilm[]);
     setShowTieOptions(false);
     setChosenFilm('');
     setIsLoading(false);

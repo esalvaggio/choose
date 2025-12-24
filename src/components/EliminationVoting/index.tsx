@@ -80,21 +80,29 @@ function EliminationVoting({ session }: { session: ISession }) {
       <div className={styles.waitingMessage}>waiting for admin to decide what to do next...</div>
     )
   ) : nextRoundFilms.length > 1 ? (
-    <button
-      className={styles.button}
-      onClick={handleElimination}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "next round"}
-    </button>
+    isAdmin ? (
+      <button
+        className={styles.button}
+        onClick={handleElimination}
+        disabled={isLoading}
+      >
+        {isLoading ? "processing..." : "next round"}
+      </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to start next round...</div>
+    )
   ) : (
-    <button
-      className={`${styles.button} ${styles.dark}`}
-      onClick={() => acceptSingleWinner()}
-      disabled={isLoading}
-    >
-      {isLoading ? "processing..." : "see results"}
-    </button>
+    isAdmin ? (
+      <button
+        className={`${styles.button} ${styles.dark}`}
+        onClick={() => acceptSingleWinner()}
+        disabled={isLoading}
+      >
+        {isLoading ? "processing..." : "see results"}
+      </button>
+    ) : (
+      <div className={styles.waitingMessage}>waiting for admin to show results...</div>
+    )
   );
 
   return (
