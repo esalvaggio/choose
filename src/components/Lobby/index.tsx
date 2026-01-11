@@ -30,11 +30,12 @@ export default function Lobby() {
   }, []);
 
   // generate and validate a session ID in the background
+  // Only do this if the database is available
   useEffect(() => {
-    if (wordList.length > 0 && !validatedSessionId && !isValidating) {
+    if (wordList.length > 0 && !validatedSessionId && !isValidating && isDbAvailable && !isChecking) {
       validateSessionId();
     }
-  }, [wordList, validatedSessionId, isValidating]);
+  }, [wordList, validatedSessionId, isValidating, isDbAvailable, isChecking]);
 
   const generateRandomSessionId = () => {
     if (wordList.length === 0) {

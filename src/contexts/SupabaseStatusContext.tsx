@@ -48,29 +48,33 @@ export function SupabaseStatusProvider({ children }: SupabaseStatusProviderProps
           .limit(1);
 
         if (error) {
-          // Check for common "project paused" error patterns
-          const errorMessage = error.message?.toLowerCase() || '';
-          const errorCode = error.code?.toLowerCase() || '';
+          // PGRST116 means "no rows" which is fine - DB is working
+          if (error.code === 'PGRST116') {
+            setIsDbAvailable(true);
+            return;
+          }
+
+          // Any other error means the database is not available
+          // This includes:
+          // - Network errors (ERR_NAME_NOT_RESOLVED when project is paused)
+          // - Project paused/suspended errors
+          // - Connection timeouts
+          // - Any unexpected errors
+          console.warn('Supabase check returned error:', error);
+          setIsDbAvailable(false);
           
+          // Check for common "project paused" error patterns for a nicer message
+          const errorMessage = error.message?.toLowerCase() || '';
           const isPaused = 
             errorMessage.includes('project') ||
             errorMessage.includes('paused') ||
             errorMessage.includes('suspended') ||
-            errorMessage.includes('inactive') ||
-            errorCode.includes('pgrst') ||
-            error.code === '503' ||
-            error.code === 'PGRST000';
+            errorMessage.includes('inactive');
 
           if (isPaused) {
-            setIsDbAvailable(false);
             setError('Database is currently paused');
           } else {
-            // Other errors might just be network issues, assume available
-            // PGRST116 means "no rows" which is fine
-            if (error.code !== 'PGRST116') {
-              console.warn('Supabase check returned error:', error);
-            }
-            setIsDbAvailable(true);
+            setError('Unable to connect to database');
           }
         } else {
           setIsDbAvailable(true);
